@@ -1,4 +1,4 @@
-Firmly App
+Echo Journal App
 ==================
 
 Work in progress...
