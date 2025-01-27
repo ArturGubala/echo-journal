@@ -12,9 +12,9 @@ fun NavController.navigateToCreateRecord(path: String, navOptions: NavOptions? =
     navigate(CreateRecordScreen(path = path), navOptions)
 }
 
-fun NavGraphBuilder.recordHistoryScreen() {
+fun NavGraphBuilder.recordHistoryScreen(navController: NavController) {
     composable<RecordHistoryScreen> {
-        RecordHistoryRoute()
+        RecordHistoryRoute(navController)
     }
 }
 

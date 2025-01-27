@@ -19,7 +19,7 @@ fun EchoJournalNavHost(
         modifier = modifier,
         startDestination = startDestination
     ) {
-        recordHistoryScreen()
+        recordHistoryScreen(navController)
         settingsScreen()
     }
 }

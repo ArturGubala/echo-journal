@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.echo_journal.core.presentation.navigation.EchoJournalNavHost
+import com.example.echo_journal.record.di.recordHistoryViewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -26,7 +27,9 @@ class EchoJournalCore: Application() {
         startKoin {
             androidLogger()
             androidContext(this@EchoJournalCore)
-            modules()
+            modules(
+                recordHistoryViewModelModule
+            )
         }
     }
 }

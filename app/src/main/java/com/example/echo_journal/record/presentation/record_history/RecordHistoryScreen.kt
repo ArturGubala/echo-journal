@@ -24,16 +24,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import com.example.echo_journal.R
+import com.example.echo_journal.core.presentation.util.ObserveAsEvents
+import com.example.echo_journal.settings.navigation.navigateToSettings
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-internal fun RecordHistoryRoute() {
-    RecordHistoryScreen()
+internal fun RecordHistoryRoute(
+    navController: NavController,
+    viewModel: RecordHistoryViewModel = koinViewModel()
+) {
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            is RecordHistoryEvent.NavigateToSettings -> {
+                navController.navigateToSettings()
+            }
+        }
+    }
+
+    RecordHistoryScreen(
+        onAction = viewModel::onAction
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun RecordHistoryScreen() {
+private fun RecordHistoryScreen(
+    onAction: (RecordHistoryAction) -> Unit
+) {
 
     Scaffold(
         topBar = {
@@ -46,7 +65,7 @@ private fun RecordHistoryScreen() {
                     Text("Small Top App Bar")
                 },
                 actions = {
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = { onAction(RecordHistoryAction.OnSettingsClick) }) {
                         Icon(
                             imageVector = Icons.Filled.Settings,
                             contentDescription = "Settings")
@@ -91,5 +110,5 @@ private fun RecordHistoryScreen() {
 @Preview(showBackground = true)
 @Composable
 private fun RecordHistoryScreenPreview() {
-    RecordHistoryScreen()
+//    RecordHistoryScreen()
 }
