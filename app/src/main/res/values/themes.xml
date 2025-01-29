@@ -5,7 +5,7 @@
 
     <style name="Theme.Echojournal.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_screen_icon</item>
-        <item name="windowSplashScreenBackground">@color/splash_screen_bg</item>
+        <item name="windowSplashScreenBackground">@drawable/background_gradient</item>
         <item name="postSplashScreenTheme">@style/Theme.Echojournal</item>
     </style>
 </resources>
