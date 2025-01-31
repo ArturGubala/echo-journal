@@ -1,6 +1,5 @@
 package com.example.echo_journal.settings.presentation.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,8 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.echo_journal.R
@@ -51,30 +50,35 @@ fun SettingsCardPreview() {
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    painter = painterResource(R.drawable.ic_stressed),
-                    contentDescription = "content description",
+                IconWithText(
+                    id = R.drawable.ic_stressed,
+                    text = "Stressed",
+                    modifier = Modifier.weight(1f)
                 )
-                Image(
-                    painter = painterResource(R.drawable.ic_sad),
-                    contentDescription = "content description"
+                IconWithText(
+                    id = R.drawable.ic_sad,
+                    text = "Sad",
+                    modifier = Modifier.weight(1f)
                 )
-                Image(
-                    painter = painterResource(R.drawable.ic_neutral),
-                    contentDescription = "content description"
+                IconWithText(
+                    id = R.drawable.ic_neutral,
+                    text = "Neutral",
+                    modifier = Modifier.weight(1f)
                 )
-                Image(
-                    painter = painterResource(R.drawable.ic_peaceful),
-                    contentDescription = "content description"
+                IconWithText(
+                    id = R.drawable.ic_peaceful,
+                    text = "Peaceful",
+                    modifier = Modifier.weight(1f)
                 )
-                Image(
-                    painter = painterResource(R.drawable.ic_excited),
-                    contentDescription = "content description"
+                IconWithText(
+                    id = R.drawable.ic_excited,
+                    text = "Excited",
+                    modifier = Modifier.weight(1f)
                 )
             }
-        },
-//        modifier = Modifier.fillMaxWidth()
+        }
     )
 }
