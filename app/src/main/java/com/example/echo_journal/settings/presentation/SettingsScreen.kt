@@ -1,12 +1,18 @@
 package com.example.echo_journal.settings.presentation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -111,7 +117,40 @@ private fun SettingsScreen() {
                         subtitle = "Select default topics to apply to all new entries"
                     )
                 },
-                content = {}
+                content = {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    ) {
+                        AssistChip(
+                            label = {
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text( text = "#", modifier = Modifier.padding(end = 3.dp) )
+                                    Text( text = "Topic 1" )
+                                    Icon(
+                                        imageVector = Icons.Filled.Clear,
+                                        contentDescription = "Back",
+                                        modifier = Modifier
+                                            .size(16.dp)
+                                            .clickable { }
+                                    )
+                                }
+                            },
+                            modifier = Modifier,
+                            onClick = { },
+                            border = null,
+                            shape = RoundedCornerShape(20.dp),
+                            colors = AssistChipDefaults.assistChipColors(
+                                labelColor = MaterialTheme.colorScheme.primary,
+                                leadingIconContentColor = MaterialTheme.colorScheme.primary,
+                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            )
+                        )
+
+                    }
+                }
             )
         }
     }
