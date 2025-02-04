@@ -26,7 +26,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.echo_journal.R
+import com.example.echo_journal.core.domain.Mood
+import com.example.echo_journal.core.presentation.util.getMood
 import com.example.echo_journal.settings.presentation.components.CardHeader
 import com.example.echo_journal.settings.presentation.components.IconWithText
 import com.example.echo_journal.settings.presentation.components.SettingsCard
@@ -82,31 +83,13 @@ private fun SettingsScreen() {
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        IconWithText(
-                            id = R.drawable.ic_stressed,
-                            text = "Stressed",
-                            modifier = Modifier.weight(1f)
-                        )
-                        IconWithText(
-                            id = R.drawable.ic_sad,
-                            text = "Sad",
-                            modifier = Modifier.weight(1f)
-                        )
-                        IconWithText(
-                            id = R.drawable.ic_neutral,
-                            text = "Neutral",
-                            modifier = Modifier.weight(1f)
-                        )
-                        IconWithText(
-                            id = R.drawable.ic_peaceful,
-                            text = "Peaceful",
-                            modifier = Modifier.weight(1f)
-                        )
-                        IconWithText(
-                            id = R.drawable.ic_excited,
-                            text = "Excited",
-                            modifier = Modifier.weight(1f)
-                        )
+                        Mood.entries.forEach {
+                            IconWithText(
+                                id = getMood(it),
+                                text = it.name,
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
                     }
                 }
             )
