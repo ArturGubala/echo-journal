@@ -2,8 +2,10 @@ package com.example.echo_journal.settings.presentation
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -14,6 +16,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,24 +25,30 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.echo_journal.core.domain.Mood
-import com.example.echo_journal.core.presentation.util.getMood
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.echo_journal.settings.presentation.components.CardHeader
 import com.example.echo_journal.settings.presentation.components.IconWithText
 import com.example.echo_journal.settings.presentation.components.SettingsCard
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-internal fun SettingsRoute() {
-    SettingsScreen()
+internal fun SettingsRoute(
+    viewModel: SettingsViewModel = koinViewModel()
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    SettingsScreen(state = state)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SettingsScreen() {
+private fun SettingsScreen(
+    state: SettingsState
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -69,72 +78,82 @@ private fun SettingsScreen() {
                 .padding(horizontal = 10.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            SettingsCard(
-                header =  {
-                    CardHeader(
-                        title = "My mood",
-                        subtitle = "Select default mood to apply to all new entries"
-                    )
-                },
-                content = {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Mood.entries.forEach {
-                            IconWithText(
-                                id = getMood(it),
-                                text = it.name,
-                                modifier = Modifier.weight(1f)
-                            )
+            if (state.isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                SettingsCard(
+                    header = {
+                        CardHeader(
+                            title = "My mood",
+                            subtitle = "Select default mood to apply to all new entries"
+                        )
+                    },
+                    content = {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            state.moods.forEach {
+                                IconWithText(
+                                    id = it.resId,
+                                    text = it.name,
+                                    modifier = Modifier.weight(1f)
+                                )
+                            }
                         }
                     }
-                }
-            )
-            SettingsCard(
-                header =  {
-                    CardHeader(
-                        title = "My Topics",
-                        subtitle = "Select default topics to apply to all new entries"
-                    )
-                },
-                content = {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(2.dp),
-                    ) {
-                        AssistChip(
-                            label = {
-                                Row(
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text( text = "#", modifier = Modifier.padding(end = 3.dp) )
-                                    Text( text = "Topic 1" )
-                                    Icon(
-                                        imageVector = Icons.Filled.Clear,
-                                        contentDescription = "Back",
-                                        modifier = Modifier
-                                            .size(16.dp)
-                                            .clickable { }
-                                    )
-                                }
-                            },
-                            modifier = Modifier,
-                            onClick = { },
-                            border = null,
-                            shape = RoundedCornerShape(20.dp),
-                            colors = AssistChipDefaults.assistChipColors(
-                                labelColor = MaterialTheme.colorScheme.primary,
-                                leadingIconContentColor = MaterialTheme.colorScheme.primary,
-                                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                            )
+                )
+                SettingsCard(
+                    header = {
+                        CardHeader(
+                            title = "My Topics",
+                            subtitle = "Select default topics to apply to all new entries"
                         )
+                    },
+                    content = {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(2.dp),
+                        ) {
+                            AssistChip(
+                                label = {
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(text = "#", modifier = Modifier.padding(end = 3.dp))
+                                        Text(text = "Topic 1")
+                                        Icon(
+                                            imageVector = Icons.Filled.Clear,
+                                            contentDescription = "Back",
+                                            modifier = Modifier
+                                                .size(16.dp)
+                                                .clickable { }
+                                        )
+                                    }
+                                },
+                                modifier = Modifier,
+                                onClick = { },
+                                border = null,
+                                shape = RoundedCornerShape(20.dp),
+                                colors = AssistChipDefaults.assistChipColors(
+                                    labelColor = MaterialTheme.colorScheme.primary,
+                                    leadingIconContentColor = MaterialTheme.colorScheme.primary,
+                                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                )
+                            )
 
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }

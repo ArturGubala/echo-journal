@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import com.example.echo_journal.core.datastore.di.dataStoreModule
 import com.example.echo_journal.core.presentation.navigation.EchoJournalNavHost
 import com.example.echo_journal.record.di.recordHistoryViewModelModule
+import com.example.echo_journal.settings.di.settingsViewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -30,7 +31,8 @@ class EchoJournalCore: Application() {
             androidContext(this@EchoJournalCore)
             modules(
                 recordHistoryViewModelModule,
-                dataStoreModule
+                dataStoreModule,
+                settingsViewModelModule
             )
         }
     }
