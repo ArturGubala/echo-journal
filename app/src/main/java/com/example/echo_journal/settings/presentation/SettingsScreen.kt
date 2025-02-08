@@ -41,13 +41,17 @@ internal fun SettingsRoute(
     viewModel: SettingsViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    SettingsScreen(state = state)
+    SettingsScreen(
+        state = state,
+        onAction = viewModel::onAction
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SettingsScreen(
-    state: SettingsState
+    state: SettingsState,
+    onAction: (SettingsAction) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -105,7 +109,13 @@ private fun SettingsScreen(
                                 IconWithText(
                                     id = it.resId,
                                     text = it.name,
-                                    modifier = Modifier.weight(1f)
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .clickable {
+                                            onAction(
+                                                SettingsAction.OnMoodClick(it)
+                                            )
+                                        }
                                 )
                             }
                         }

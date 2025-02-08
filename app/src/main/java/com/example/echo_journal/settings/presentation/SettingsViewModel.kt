@@ -7,7 +7,9 @@ import com.example.echo_journal.core.datastore.UserPreferences
 import com.example.echo_journal.core.domain.Mood
 import com.example.echo_journal.core.domain.MoodUi
 import com.example.echo_journal.core.presentation.util.getMood
+import com.example.echo_journal.core.presentation.util.getMoodByName
 import com.example.echo_journal.core.presentation.util.getMoodColoured
+import com.example.echo_journal.core.presentation.util.getMoodUiByMood
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
@@ -32,6 +34,14 @@ class SettingsViewModel(
             SettingsState(),
         )
 
+    fun onAction(action: SettingsAction) {
+        when (action) {
+            is SettingsAction.OnMoodClick -> {
+                setDeafultMood(getMoodByName(action.mood.name))
+            }
+        }
+    }
+
     private fun initialiseMoods() {
         var moods = mutableListOf<MoodUi>()
 
@@ -39,7 +49,7 @@ class SettingsViewModel(
             moods.add(
                 MoodUi(
                     resId = getMood(it),
-                    name = it.name,
+                    name = it.name.lowercase().replaceFirstChar { it.uppercase() },
                     isSelected = false
                 )
             )
@@ -66,7 +76,7 @@ class SettingsViewModel(
                 _state.update {
                     it.copy(
                         moods = state.value.moods.map { mood ->
-                            if (mood.name == userPreferences.defaultMood.name) {
+                            if (mood.name.uppercase() == userPreferences.defaultMood.name.uppercase()) {
                                 mood.copy(
                                     resId = getMoodColoured(userPreferences.defaultMood),
                                     isSelected = true
@@ -82,6 +92,38 @@ class SettingsViewModel(
             _state.update {
                 it.copy(
                     isLoading = false
+                )
+            }
+        }
+    }
+
+    private fun setDeafultMood(mood: Mood?) {
+        if (mood == null) return
+
+        viewModelScope.launch {
+            userPreferencesDataSource.updateData {
+                it.copy(
+                    defaultMood = mood
+                )
+            }
+
+            _state.update {
+                val updatedMoods = it.moods.map { moodUi ->
+                    if (moodUi.name == getMoodUiByMood(mood).name) {
+                        moodUi.copy(
+                            resId = getMoodColoured(mood),
+                            isSelected = true
+                        )
+                    } else {
+                        moodUi.copy(
+                            resId = getMood(Mood.valueOf(moodUi.name.uppercase())),
+                            isSelected = false
+                        )
+                    }
+                }
+
+                it.copy(
+                    moods = updatedMoods
                 )
             }
         }
