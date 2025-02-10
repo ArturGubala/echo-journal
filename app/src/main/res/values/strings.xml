@@ -5,4 +5,5 @@
     <string name="default_topicks_settings_title">My Topics</string>
     <string name="default_topicks_settings_subtitle">Select default topics to apply to all new entries</string>
     <string name="record_screen_topappbar_title">Your EchoJournal</string>
+    <string name="settings_screen_topappbar_title">Settings</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.example.echo_journal.settings.presentation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -63,7 +64,11 @@ private fun SettingsScreen(
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 title = {
-                    Text("Settings")
+                    Text(
+                        text = stringResource(R.string.settings_screen_topappbar_title),
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.Black
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = {  }) {
@@ -76,6 +81,7 @@ private fun SettingsScreen(
 
             )
         },
+        containerColor = Color.Transparent
     ) { padding ->
         Column(
             modifier = Modifier
@@ -125,7 +131,9 @@ private fun SettingsScreen(
                                 )
                             }
                         }
-                    }
+                    },
+                    modifier = Modifier
+                        .background(Color.White)
                 )
                 SettingsCard(
                     header = {
@@ -167,7 +175,9 @@ private fun SettingsScreen(
                                 )
                             )
                         }
-                    }
+                    },
+                    modifier = Modifier
+                        .background(Color.White)
                 )
             }
         }
