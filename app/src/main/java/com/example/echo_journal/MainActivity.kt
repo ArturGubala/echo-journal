@@ -16,9 +16,7 @@ class MainActivity : ComponentActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { _, insets -> insets }
 
         setContent {
-            EchoJournalTheme(
-                dynamicColor = false
-            ) {
+            EchoJournalTheme{
                 EchoJournalApp()
             }
         }

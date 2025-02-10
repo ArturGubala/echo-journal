@@ -97,7 +97,8 @@ private fun SettingsScreen(
                     header = {
                         CardHeader(
                             title = stringResource(R.string.default_mood_setings_title),
-                            subtitle = stringResource(R.string.default_mood_settings_subtitle)
+                            subtitle = stringResource(R.string.default_mood_settings_subtitle),
+                            modifier = Modifier.fillMaxWidth()
                         )
                     },
                     content = {
@@ -130,7 +131,8 @@ private fun SettingsScreen(
                     header = {
                         CardHeader(
                             title = stringResource(R.string.default_topicks_settings_title),
-                            subtitle = stringResource(R.string.default_topicks_settings_subtitle)
+                            subtitle = stringResource(R.string.default_topicks_settings_subtitle),
+                            modifier = Modifier.fillMaxWidth()
                         )
                     },
                     content = {

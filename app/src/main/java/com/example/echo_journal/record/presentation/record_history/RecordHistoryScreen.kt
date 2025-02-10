@@ -4,7 +4,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -23,7 +25,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.echo_journal.R
 import com.example.echo_journal.core.presentation.util.ObserveAsEvents
@@ -62,7 +66,11 @@ private fun RecordHistoryScreen(
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 title = {
-                    Text("Small Top App Bar")
+                    Text(
+                        text = stringResource(R.string.record_screen_topappbar_title),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Color.Black
+                    )
                 },
                 actions = {
                     IconButton(onClick = { onAction(RecordHistoryAction.OnSettingsClick) }) {
@@ -77,12 +85,22 @@ private fun RecordHistoryScreen(
             FloatingActionButton(
                 onClick = { },
                 shape = CircleShape,
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                modifier = Modifier
+                    .size(64.dp)
+                    .offset(y = (-23).dp)
             ) {
-                Icon(Icons.Filled.Add, "Floating action button.")
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "Floating action button.",
+                    modifier = Modifier.size(32.dp)
+                )
             }
         },
-        floatingActionButtonPosition = androidx.compose.material3.FabPosition.End
+        floatingActionButtonPosition = androidx.compose.material3.FabPosition.End,
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onBackground,
+        contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0),
     ) { padding ->
         Column(
             modifier = Modifier
