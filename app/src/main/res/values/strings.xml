@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Echo Journal</string>
+    <string name="default_mood_setings_title">My mood</string>
+    <string name="default_mood_settings_subtitle">Select default mood to apply to all new entries</string>
+    <string name="default_topicks_settings_title">My Topics</string>
+    <string name="default_topicks_settings_subtitle">Select default topics to apply to all new entries</string>
 </resources>
