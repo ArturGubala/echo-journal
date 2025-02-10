@@ -29,8 +29,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.echo_journal.R
 import com.example.echo_journal.settings.presentation.components.CardHeader
 import com.example.echo_journal.settings.presentation.components.IconWithText
 import com.example.echo_journal.settings.presentation.components.SettingsCard
@@ -94,8 +96,8 @@ private fun SettingsScreen(
                 SettingsCard(
                     header = {
                         CardHeader(
-                            title = "My mood",
-                            subtitle = "Select default mood to apply to all new entries"
+                            title = stringResource(R.string.default_mood_setings_title),
+                            subtitle = stringResource(R.string.default_mood_settings_subtitle)
                         )
                     },
                     content = {
@@ -108,10 +110,13 @@ private fun SettingsScreen(
                             state.moods.forEach {
                                 IconWithText(
                                     id = it.resId,
-                                    text = it.name,
+                                    text = it.name.lowercase().replaceFirstChar { it.uppercase() },
                                     modifier = Modifier
                                         .weight(1f)
-                                        .clickable {
+                                        .clickable(
+                                            interactionSource = null,
+                                            indication = null
+                                        ) {
                                             onAction(
                                                 SettingsAction.OnMoodClick(it)
                                             )
@@ -124,8 +129,8 @@ private fun SettingsScreen(
                 SettingsCard(
                     header = {
                         CardHeader(
-                            title = "My Topics",
-                            subtitle = "Select default topics to apply to all new entries"
+                            title = stringResource(R.string.default_topicks_settings_title),
+                            subtitle = stringResource(R.string.default_topicks_settings_subtitle)
                         )
                     },
                     content = {
@@ -159,7 +164,6 @@ private fun SettingsScreen(
                                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                                 )
                             )
-
                         }
                     }
                 )

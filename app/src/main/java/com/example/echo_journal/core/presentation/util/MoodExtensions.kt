@@ -26,11 +26,11 @@ fun getMoodColoured(mood: Mood): Int {
 
 fun getMoodByName(value: String): Mood? {
     return when (value) {
-        "Excited" -> Mood.EXCITED
-        "Peaceful" -> Mood.PEACEFUL
-        "Neutral" -> Mood.NEUTRAL
-        "Sad" -> Mood.SAD
-        "Stressed" -> Mood.STRESSED
+        "EXCITED" -> Mood.EXCITED
+        "PEACEFUL" -> Mood.PEACEFUL
+        "NEUTRAL" -> Mood.NEUTRAL
+        "SAD" -> Mood.SAD
+        "STRESSED" -> Mood.STRESSED
         else -> null
     }
 }
@@ -38,11 +38,11 @@ fun getMoodByName(value: String): Mood? {
 fun getMoodUiByMood(mood: Mood): MoodUi {
     val resId = getMood(mood)
     val name = when (mood) {
-        Mood.EXCITED -> "Excited"
-        Mood.PEACEFUL -> "Peaceful"
-        Mood.NEUTRAL -> "Neutral"
-        Mood.SAD -> "Sad"
-        Mood.STRESSED -> "Stressed"
+        Mood.EXCITED -> "EXCITED"
+        Mood.PEACEFUL -> "PEACEFUL"
+        Mood.NEUTRAL -> "NEUTRAL"
+        Mood.SAD -> "SAD"
+        Mood.STRESSED -> "STRESSED"
     }
 
     return MoodUi(

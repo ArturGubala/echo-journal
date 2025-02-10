@@ -49,7 +49,7 @@ class SettingsViewModel(
             moods.add(
                 MoodUi(
                     resId = getMood(it),
-                    name = it.name.lowercase().replaceFirstChar { it.uppercase() },
+                    name = it.name,
                     isSelected = false
                 )
             )
@@ -76,7 +76,7 @@ class SettingsViewModel(
                 _state.update {
                     it.copy(
                         moods = state.value.moods.map { mood ->
-                            if (mood.name.uppercase() == userPreferences.defaultMood.name.uppercase()) {
+                            if (mood.name == userPreferences.defaultMood.name) {
                                 mood.copy(
                                     resId = getMoodColoured(userPreferences.defaultMood),
                                     isSelected = true
@@ -116,7 +116,7 @@ class SettingsViewModel(
                         )
                     } else {
                         moodUi.copy(
-                            resId = getMood(Mood.valueOf(moodUi.name.uppercase())),
+                            resId = getMood(Mood.valueOf(moodUi.name)),
                             isSelected = false
                         )
                     }
