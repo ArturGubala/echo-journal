@@ -20,6 +20,8 @@ fun EchoJournalNavHost(
         startDestination = startDestination
     ) {
         recordHistoryScreen(navController)
-        settingsScreen()
+        settingsScreen(
+            onBackClick = { navController.popBackStack() }
+        )
     }
 }

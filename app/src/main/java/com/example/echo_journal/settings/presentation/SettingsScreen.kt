@@ -41,10 +41,12 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun SettingsRoute(
+    onBackClick: () -> Unit,
     viewModel: SettingsViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     SettingsScreen(
+        onBackClick = onBackClick,
         state = state,
         onAction = viewModel::onAction
     )
@@ -53,6 +55,7 @@ internal fun SettingsRoute(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SettingsScreen(
+    onBackClick: () -> Unit,
     state: SettingsState,
     onAction: (SettingsAction) -> Unit
 ) {
@@ -71,7 +74,7 @@ private fun SettingsScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = {  }) {
+                    IconButton(onClick = { onBackClick }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
