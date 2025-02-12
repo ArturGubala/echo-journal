@@ -8,11 +8,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -21,6 +24,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -29,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -37,6 +42,7 @@ import com.example.echo_journal.R
 import com.example.echo_journal.settings.presentation.components.CardHeader
 import com.example.echo_journal.settings.presentation.components.IconWithText
 import com.example.echo_journal.settings.presentation.components.SettingsCard
+import com.example.echo_journal.ui.theme.TopicBackground
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -68,13 +74,13 @@ private fun SettingsScreen(
                 ),
                 title = {
                     Text(
-                        text = stringResource(R.string.settings_screen_topappbar_title),
+                        text = stringResource(R.string.settings_screen_top_appbar_title),
                         style = MaterialTheme.typography.headlineMedium,
                         color = Color.Black
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { onBackClick }) {
+                    IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
@@ -105,7 +111,7 @@ private fun SettingsScreen(
                 SettingsCard(
                     header = {
                         CardHeader(
-                            title = stringResource(R.string.default_mood_setings_title),
+                            title = stringResource(R.string.default_mood_settings_title),
                             subtitle = stringResource(R.string.default_mood_settings_subtitle),
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -141,14 +147,15 @@ private fun SettingsScreen(
                 SettingsCard(
                     header = {
                         CardHeader(
-                            title = stringResource(R.string.default_topicks_settings_title),
-                            subtitle = stringResource(R.string.default_topicks_settings_subtitle),
+                            title = stringResource(R.string.default_topic_settings_title),
+                            subtitle = stringResource(R.string.default_topic_settings_subtitle),
                             modifier = Modifier.fillMaxWidth()
                         )
                     },
                     content = {
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(2.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             AssistChip(
                                 label = {
@@ -156,13 +163,14 @@ private fun SettingsScreen(
                                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        Text(text = "#", modifier = Modifier.padding(end = 3.dp))
+                                        Text(text = "#", modifier = Modifier.padding(end = 3.dp).alpha(0.5f))
                                         Text(text = "Topic 1")
                                         Icon(
                                             imageVector = Icons.Filled.Clear,
-                                            contentDescription = "Back",
+                                            contentDescription = "Clear",
                                             modifier = Modifier
                                                 .size(16.dp)
+                                                .alpha(.3f)
                                                 .clickable { }
                                         )
                                     }
@@ -172,10 +180,53 @@ private fun SettingsScreen(
                                 border = null,
                                 shape = RoundedCornerShape(20.dp),
                                 colors = AssistChipDefaults.assistChipColors(
-                                    labelColor = MaterialTheme.colorScheme.primary,
-                                    leadingIconContentColor = MaterialTheme.colorScheme.primary,
-                                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                    labelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    leadingIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    containerColor = TopicBackground
                                 )
+                            )
+                            IconButton(
+                                onClick = { onAction(SettingsAction.OnNewTopicClick) },
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .offset(x = 3.dp),
+                                colors = IconButtonColors(
+                                    containerColor = TopicBackground,
+                                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                    disabledContentColor = MaterialTheme.colorScheme.primary
+
+                                )
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Add,
+                                    contentDescription = "Add",
+                                    modifier = Modifier
+                                        .size(24.dp)
+                                )
+                            }
+                            BasicTextField(
+                                value = state.newTopic,
+                                onValueChange = { onAction(SettingsAction.OnTopicTextChange(it)) },
+                                modifier = Modifier
+                                    .weight(1f),
+                                decorationBox = { innerTextField ->
+                                    Box(
+                                        contentAlignment = Alignment.CenterStart,
+                                    ) {
+                                        innerTextField()
+                                        if (state.newTopic.isEmpty()) {
+                                            Text(
+                                                text = stringResource(R.string.default_topic_settings_placeholder),
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                modifier = Modifier.alpha(0.5f).padding(start = 2.dp)
+                                            )
+                                        }
+                                    }
+                                }
+                            )
+                            Text(
+                                text = state.newTopic
                             )
                         }
                     },

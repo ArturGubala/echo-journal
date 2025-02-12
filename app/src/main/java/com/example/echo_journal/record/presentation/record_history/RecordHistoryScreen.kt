@@ -67,7 +67,7 @@ private fun RecordHistoryScreen(
                 ),
                 title = {
                     Text(
-                        text = stringResource(R.string.record_screen_topappbar_title),
+                        text = stringResource(R.string.record_screen_top_appbar_title),
                         style = MaterialTheme.typography.titleLarge,
                         color = Color.Black
                     )

@@ -39,6 +39,14 @@ class SettingsViewModel(
             is SettingsAction.OnMoodClick -> {
                 setDeafultMood(getMoodByName(action.mood.name))
             }
+            is SettingsAction.OnTopicTextChange -> {
+                _state.update {
+                    it.copy(
+                        newTopic = action.newTopic
+                    )
+                }
+            }
+            is SettingsAction.OnNewTopicClick -> {}
         }
     }
 
