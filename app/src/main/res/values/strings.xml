@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">Echo Journal</string>
-    <string name="default_mood_setings_title">My mood</string>
+    <string name="default_mood_settings_title">My mood</string>
     <string name="default_mood_settings_subtitle">Select default mood to apply to all new entries</string>
-    <string name="default_topicks_settings_title">My Topics</string>
-    <string name="default_topicks_settings_subtitle">Select default topics to apply to all new entries</string>
-    <string name="record_screen_topappbar_title">Your EchoJournal</string>
-    <string name="settings_screen_topappbar_title">Settings</string>
+    <string name="default_topic_settings_title">My Topics</string>
+    <string name="default_topic_settings_subtitle">Select default topics to apply to all new entries</string>
+    <string name="record_screen_top_appbar_title">Your EchoJournal</string>
+    <string name="settings_screen_top_appbar_title">Settings</string>
+    <string name="default_topic_settings_placeholder">New topic</string>
 </resources>
