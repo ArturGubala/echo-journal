@@ -1,4 +1,4 @@
-package com.example.echo_journal.settings.presentation.components
+package com.example.echo_journal.core.presentation.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
