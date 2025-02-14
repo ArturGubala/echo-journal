@@ -5,12 +5,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
@@ -21,6 +23,8 @@ import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,6 +35,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -39,8 +46,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.echo_journal.R
+import com.example.echo_journal.core.presentation.components.IconWithText
 import com.example.echo_journal.settings.presentation.components.CardHeader
-import com.example.echo_journal.settings.presentation.components.IconWithText
 import com.example.echo_journal.settings.presentation.components.SettingsCard
 import com.example.echo_journal.ui.theme.TopicBackground
 import org.koin.androidx.compose.koinViewModel
@@ -58,7 +65,7 @@ internal fun SettingsRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 private fun SettingsScreen(
     onBackClick: () -> Unit,
@@ -153,10 +160,13 @@ private fun SettingsScreen(
                         )
                     },
                     content = {
-                        Row(
+                        var expanded by remember { mutableStateOf(false) }
+                        FlowRow(
                             horizontalArrangement = Arrangement.spacedBy(2.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalArrangement = Arrangement.aligned(Alignment.CenterVertically),
+                            modifier = Modifier.wrapContentSize()
                         ) {
+                            for (i in 0..3){
                             AssistChip(
                                 label = {
                                     Row(
@@ -164,7 +174,7 @@ private fun SettingsScreen(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Text(text = "#", modifier = Modifier.padding(end = 3.dp).alpha(0.5f))
-                                        Text(text = "Topic 1")
+                                        Text(text = "Topic new en ${i+1}")
                                         Icon(
                                             imageVector = Icons.Filled.Clear,
                                             contentDescription = "Clear",
@@ -184,12 +194,16 @@ private fun SettingsScreen(
                                     leadingIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                                     containerColor = TopicBackground
                                 )
-                            )
+                            )}
                             IconButton(
-                                onClick = { onAction(SettingsAction.OnNewTopicClick) },
+                                onClick = {
+                                    onAction(SettingsAction.OnNewTopicClick)
+                                          expanded = !expanded
+                                },
                                 modifier = Modifier
                                     .size(32.dp)
-                                    .offset(x = 3.dp),
+//                                    .offset(x = 3.dp),
+                                    .align(alignment = Alignment.CenterVertically),
                                 colors = IconButtonColors(
                                     containerColor = TopicBackground,
                                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -209,7 +223,8 @@ private fun SettingsScreen(
                                 value = state.newTopic,
                                 onValueChange = { onAction(SettingsAction.OnTopicTextChange(it)) },
                                 modifier = Modifier
-                                    .weight(1f),
+                                    .weight(1f)
+                                    .align(Alignment.CenterVertically),
                                 decorationBox = { innerTextField ->
                                     Box(
                                         contentAlignment = Alignment.CenterStart,
@@ -225,9 +240,20 @@ private fun SettingsScreen(
                                     }
                                 }
                             )
-                            Text(
-                                text = state.newTopic
-                            )
+                            DropdownMenu(
+                                expanded = expanded,
+                                onDismissRequest = { },
+                                modifier = Modifier.fillMaxWidth(0.87f)
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text("Option 1") },
+                                    onClick = { /* Do something... */ }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Option 2") },
+                                    onClick = { /* Do something... */ }
+                                )
+                            }
                         }
                     },
                     modifier = Modifier
