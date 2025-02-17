@@ -6,4 +6,5 @@ interface SettingsAction {
     data class OnMoodClick(val mood: MoodUi) : SettingsAction
     data class OnTopicTextChange(val newTopic: String) : SettingsAction
     data object OnNewTopicClick : SettingsAction
+    data object OnEditModeCancel : SettingsAction
 }

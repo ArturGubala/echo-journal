@@ -46,7 +46,20 @@ class SettingsViewModel(
                     )
                 }
             }
-            is SettingsAction.OnNewTopicClick -> {}
+            is SettingsAction.OnNewTopicClick -> {
+                _state.update {
+                    it.copy(
+                        newTopic = ""
+                    )
+                }
+            }
+            is SettingsAction.OnEditModeCancel -> {
+                _state.update {
+                    it.copy(
+                        newTopic = null
+                    )
+                }
+            }
         }
     }
 
