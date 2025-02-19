@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
@@ -29,7 +28,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -43,7 +41,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -239,36 +236,36 @@ private fun SettingsScreen(
                                 } else {
 
 
-                                    BasicTextField(
-                                        value = state.newTopic,
-                                        onValueChange = {
-                                            onAction(
-                                                SettingsAction.OnTopicTextChange(
-                                                    it
-                                                )
-                                            )
-                                        },
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .align(Alignment.CenterVertically)
-                                            .menuAnchor(MenuAnchorType.PrimaryEditable)
-                                            .focusRequester(focusRequester),
-                                        decorationBox = { innerTextField ->
-                                            Box(
-                                                contentAlignment = Alignment.CenterStart,
-                                            ) {
-                                                innerTextField()
-                                                if (state.newTopic.isEmpty()) {
-                                                    Text(
-                                                        text = stringResource(R.string.default_topic_settings_placeholder),
-                                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                        modifier = Modifier.alpha(0.5f)
-                                                            .padding(start = 2.dp)
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    )
+//                                    BasicTextField(
+//                                        value = state.newTopic,
+//                                        onValueChange = {
+//                                            onAction(
+//                                                SettingsAction.OnTopicTextChange(
+//                                                    it
+//                                                )
+//                                            )
+//                                        },
+//                                        modifier = Modifier
+//                                            .weight(1f)
+//                                            .align(Alignment.CenterVertically)
+//                                            .menuAnchor(MenuAnchorType.PrimaryEditable)
+//                                            .focusRequester(focusRequester),
+//                                        decorationBox = { innerTextField ->
+//                                            Box(
+//                                                contentAlignment = Alignment.CenterStart,
+//                                            ) {
+//                                                innerTextField()
+//                                                if (state.newTopic.isEmpty()) {
+//                                                    Text(
+//                                                        text = stringResource(R.string.default_topic_settings_placeholder),
+//                                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+//                                                        modifier = Modifier.alpha(0.5f)
+//                                                            .padding(start = 2.dp)
+//                                                    )
+//                                                }
+//                                            }
+//                                        }
+//                                    )
 
                                     LaunchedEffect(Unit) {
                                             focusRequester.requestFocus()
