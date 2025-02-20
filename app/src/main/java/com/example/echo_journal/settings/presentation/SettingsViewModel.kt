@@ -39,26 +39,18 @@ class SettingsViewModel(
             is SettingsAction.OnMoodClick -> {
                 setDeafultMood(getMoodByName(action.mood.name))
             }
-            is SettingsAction.OnTopicTextChange -> {
-                _state.update {
-                    it.copy(
-                        newTopic = action.newTopic
-                    )
+            is SettingsAction.OnTopicValueChange -> {
+                updateTopicState {
+                    it.copy(topicValue = action.newTopic)
                 }
             }
             is SettingsAction.OnNewTopicClick -> {
-                _state.update {
-                    it.copy(
-                        newTopic = ""
-                    )
+                updateTopicState {
+                    it.copy(topicValue = "")
                 }
             }
-            is SettingsAction.OnEditModeCancel -> {
-                _state.update {
-                    it.copy(
-                        newTopic = null
-                    )
-                }
+            is SettingsAction.AddButtonVisibleToggled -> {
+                toggleAddButtonVisibility()
             }
         }
     }
@@ -147,6 +139,18 @@ class SettingsViewModel(
                     moods = updatedMoods
                 )
             }
+        }
+    }
+
+    private fun toggleAddButtonVisibility() {
+        updateTopicState {
+            it.copy(isAddButtonVisible = it.isAddButtonVisible.not())
+        }
+    }
+
+    private fun updateTopicState(update: (SettingsState.TopicState) -> SettingsState.TopicState) {
+        _state.update {
+            it.copy(topicState = update(it.topicState))
         }
     }
 }
