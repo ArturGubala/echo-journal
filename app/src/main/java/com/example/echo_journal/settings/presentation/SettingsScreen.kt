@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.echo_journal.R
 import com.example.echo_journal.core.presentation.components.IconWithText
+import com.example.echo_journal.core.presentation.components.TopicDropdown
 import com.example.echo_journal.core.utils.toInt
 import com.example.echo_journal.settings.presentation.components.CardHeader
 import com.example.echo_journal.settings.presentation.components.SettingsCard
@@ -143,34 +144,45 @@ private fun SettingsScreen(
                         .background(Color.White)
                 )
 
-                var topicOffset by remember { mutableStateOf(IntOffset.Zero) }
-                val verticalSpace = 16.dp.toInt()
+                Box {
+                    var topicOffset by remember { mutableStateOf(IntOffset.Zero) }
+                    val verticalSpace = 16.dp.toInt()
 
-                SettingsCard(
-                    header = {
-                        CardHeader(
-                            title = stringResource(R.string.default_topic_settings_title),
-                            subtitle = stringResource(R.string.default_topic_settings_subtitle),
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    },
-                    content = {
-                        TopicTagsWithAddButton(
-                            topicState = state.topicState,
-                            onAction = onAction,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .onGloballyPositioned { coordinates ->
-                            topicOffset = IntOffset(
-                                coordinates.positionInParent().x.toInt(),
-                                coordinates.positionInParent().y.toInt() + coordinates.size.height + verticalSpace
+                    SettingsCard(
+                        header = {
+                            CardHeader(
+                                title = stringResource(R.string.default_topic_settings_title),
+                                subtitle = stringResource(R.string.default_topic_settings_subtitle),
+                                modifier = Modifier.fillMaxWidth()
                             )
                         },
-                        )
-                    },
-                    modifier = Modifier
-                        .background(Color.White)
-                )
+                        content = {
+                            TopicTagsWithAddButton(
+                                topicState = state.topicState,
+                                onAction = onAction,
+                                modifier = Modifier
+                                    .onGloballyPositioned { coordinates ->
+                                        topicOffset = IntOffset(
+                                            coordinates.positionInParent().x.toInt(),
+                                            coordinates.positionInParent().y.toInt() + coordinates.size.height + verticalSpace
+                                        )
+                                    }
+                                    .fillMaxWidth(),
+                            )
+                        },
+                        modifier = Modifier
+                            .background(Color.White)
+                    )
+
+                    TopicDropdown(
+                        searchQuery = state.topicState.topicValue,
+                        topics = state.topicState.foundTopics,
+                        onTopicClick = { onAction(SettingsAction.OnFoundedTopicClick(it)) },
+                        onCreateClick = { onAction(SettingsAction.OnCreateTopicClick) },
+                        startOffset = topicOffset,
+                        modifier = Modifier.padding(horizontal = 14.dp)
+                    )
+                }
             }
         }
     }
