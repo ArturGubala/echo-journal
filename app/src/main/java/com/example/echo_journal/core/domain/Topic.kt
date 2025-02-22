@@ -1,4 +1,4 @@
-package com.example.echo_journal.data.entity
+package com.example.echo_journal.core.domain
 
 import com.example.echo_journal.utils.Constants
 

@@ -1,7 +1,7 @@
 package com.example.echo_journal.settings.presentation
 
 import com.example.echo_journal.core.domain.MoodUi
-import com.example.echo_journal.data.entity.Topic
+import com.example.echo_journal.core.domain.Topic
 
 interface SettingsAction {
     data class OnMoodClick(val mood: MoodUi) : SettingsAction
