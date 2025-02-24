@@ -29,7 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.example.echo_journal.R
-import com.example.echo_journal.core.domain.Topic
+import com.example.echo_journal.core.domain.topic.Topic
 
 @Composable
 fun TopicTag(

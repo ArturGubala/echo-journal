@@ -2,7 +2,7 @@ package com.example.echo_journal.settings.presentation
 
 import androidx.compose.ui.unit.IntOffset
 import com.example.echo_journal.core.domain.MoodUi
-import com.example.echo_journal.core.domain.Topic
+import com.example.echo_journal.core.domain.topic.Topic
 
 data class SettingsState (
     val isLoading: Boolean = false,
