@@ -12,7 +12,7 @@ data class SettingsState (
 
     data class TopicState(
         val topicValue: String = "",
-        val currentTopics: List<Topic> = listOf(),
+        val topics: List<Topic> = listOf(),
         val foundTopics: List<Topic> = listOf(),
         val topicDropdownOffset: IntOffset = IntOffset.Zero,
         val isAddButtonVisible: Boolean = true

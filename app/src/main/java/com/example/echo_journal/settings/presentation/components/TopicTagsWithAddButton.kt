@@ -39,7 +39,9 @@ fun TopicTagsWithAddButton(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        topicState.currentTopics.forEach { topic ->
+        topicState.topics
+            .filter { it.isDefault }
+            .forEach { topic ->
             TopicTag(
                 topic = topic,
                 onClearClick = { onAction(SettingsAction.OnTagClearClick(topic)) }

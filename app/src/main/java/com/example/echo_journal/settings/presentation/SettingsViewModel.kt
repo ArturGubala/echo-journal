@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.echo_journal.core.datastore.UserPreferences
 import com.example.echo_journal.core.domain.Mood
 import com.example.echo_journal.core.domain.MoodUi
+import com.example.echo_journal.core.domain.topic.Topic
 import com.example.echo_journal.core.presentation.util.getMood
 import com.example.echo_journal.core.presentation.util.getMoodByName
 import com.example.echo_journal.core.presentation.util.getMoodColoured
@@ -44,13 +45,14 @@ class SettingsViewModel(
                     it.copy(topicValue = action.newTopic)
                 }
             }
-            is SettingsAction.OnNewTopicClick -> {
-                updateTopicState {
-                    it.copy(topicValue = "")
-                }
+            is SettingsAction.OnCreateTopicClick -> {
+                addTopic()
             }
             is SettingsAction.AddButtonVisibleToggled -> {
                 toggleAddButtonVisibility()
+            }
+            is SettingsAction.OnTagClearClick -> {
+                deleteTopic(action.topic)
             }
         }
     }
@@ -101,6 +103,11 @@ class SettingsViewModel(
                     )
                 }
             }
+            updateTopicState {
+                it.copy(
+                    topics = userPreferences.topics
+                )
+            }
 
             _state.update {
                 it.copy(
@@ -145,6 +152,45 @@ class SettingsViewModel(
     private fun toggleAddButtonVisibility() {
         updateTopicState {
             it.copy(isAddButtonVisible = it.isAddButtonVisible.not())
+        }
+    }
+
+    private fun addTopic() {
+        val newTopic = Topic(
+            name = state.value.topicState.topicValue,
+            isDefault = true
+        )
+
+        updateTopicState {
+            it.copy(
+                topics = it.topics + newTopic,
+                topicValue = "",
+                isAddButtonVisible = true
+            )
+        }
+
+        viewModelScope.launch {
+            userPreferencesDataSource.updateData {
+                it.copy(
+                    topics = _state.value.topicState.topics
+                )
+            }
+        }
+    }
+
+    private fun deleteTopic(topic: Topic) {
+        updateTopicState {
+            it.copy(
+                topics = it.topics.filter { it.name.lowercase() != topic.name.lowercase() }
+            )
+        }
+
+        viewModelScope.launch {
+            userPreferencesDataSource.updateData {
+                it.copy(
+                    topics = _state.value.topicState.topics
+                )
+            }
         }
     }
 
