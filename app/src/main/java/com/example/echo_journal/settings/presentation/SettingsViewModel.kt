@@ -11,9 +11,14 @@ import com.example.echo_journal.core.presentation.util.getMood
 import com.example.echo_journal.core.presentation.util.getMoodByName
 import com.example.echo_journal.core.presentation.util.getMoodColoured
 import com.example.echo_journal.core.presentation.util.getMoodUiByMood
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -35,6 +40,31 @@ class SettingsViewModel(
             SettingsState(),
         )
 
+    private val searchQuery = MutableStateFlow("")
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val searchResults: StateFlow<List<Topic>> = searchQuery
+        .flatMapLatest { query ->
+            if (query.isBlank()) {
+                flowOf(emptyList())
+            } else {
+                flow {
+                    val foundTopics = filterTopics(query)
+                    emit(foundTopics)
+                }
+            }
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000L),
+            emptyList(),
+        )
+
+    init {
+        viewModelScope.launch {
+            observeTopicSearchResults()
+        }
+    }
+
     fun onAction(action: SettingsAction) {
         when (action) {
             is SettingsAction.OnMoodClick -> {
@@ -44,6 +74,7 @@ class SettingsViewModel(
                 updateTopicState {
                     it.copy(topicValue = action.newTopic)
                 }
+                searchQuery.value = action.newTopic
             }
             is SettingsAction.OnCreateTopicClick -> {
                 addTopic()
@@ -56,6 +87,9 @@ class SettingsViewModel(
             }
         }
     }
+
+    // TODO: Extract logic responsible for getting / setting
+    //  user preferences to separate class. Like data source?
 
     private fun initialiseMoods() {
         var moods = mutableListOf<MoodUi>()
@@ -192,6 +226,23 @@ class SettingsViewModel(
                 )
             }
         }
+    }
+
+    private suspend fun observeTopicSearchResults() {
+        searchResults.collect {
+            updateTopicState {
+                it.copy(foundTopics = searchResults.value)
+            }
+        }
+    }
+
+    private fun filterTopics(query: String): List<Topic> {
+        return _state.value.topicState.topics
+            // TODO: Remove comment after implement saving topics
+            //  outside of settings screen
+//            .filter { it.isDefault == false }
+            .filter { it.name.lowercase().startsWith(query.lowercase().lowercase()) }
+
     }
 
     private fun updateTopicState(update: (SettingsState.TopicState) -> SettingsState.TopicState) {
