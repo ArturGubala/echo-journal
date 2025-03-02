@@ -21,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -30,6 +29,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.example.echo_journal.R
 import com.example.echo_journal.core.domain.topic.Topic
+import com.example.echo_journal.ui.theme.EchoUltraLightGray
 
 @Composable
 fun TopicTag(
@@ -42,7 +42,7 @@ fun TopicTag(
             .height(32.dp)
             .clip(CircleShape)
             .background(
-                color = Color(0xFFF2F2F7),
+                color = EchoUltraLightGray,
                 shape = CircleShape
             ),
         contentAlignment = Alignment.Center

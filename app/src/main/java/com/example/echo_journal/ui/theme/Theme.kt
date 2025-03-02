@@ -6,20 +6,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val LightColorScheme = lightColorScheme(
-    primary = Blue500,
-    primaryContainer = Blue100,
-    onPrimaryContainer = Color.White,
-    secondaryContainer = SecondaryContainer,
-    onSecondaryContainer = OnSecondaryContainer,
-    errorContainer = ErrorContainer,
-    error = Error,
-    background = SecondaryContainer,
-    surface = BottomSheetSurface,
-    surfaceVariant = SurfaceVariant,
-    secondary = Secondary,
-    surfaceContainer = SurfaceContainer,
-    surfaceTint = SurfaceTint,
-    tertiary = HintColor
+    primary = EchoBlue,
+    background = EchoLightBlue,
+    surface = Color.White,
+    surfaceVariant = EchoSofBlue,
+    onPrimary = Color.White,
+    onSurface = EchoDark,
+    onSurfaceVariant = EchoGrayBlue,
+    secondary = EchoDarkSteel,
+    outline = EchoMutedGray,
+    outlineVariant = EchoLightGray,
+    errorContainer = EchoSoftPeach,
+    onErrorContainer = EchoRed,
+    onPrimaryContainer = EchoPaleBlue,
+    surfaceTint = EchoDeepBlue,
+    secondaryContainer = EchoDustyBlue
 )
 
 @Composable

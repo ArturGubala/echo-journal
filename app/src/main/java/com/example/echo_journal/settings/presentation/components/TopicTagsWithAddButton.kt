@@ -18,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.echo_journal.R
@@ -26,6 +25,7 @@ import com.example.echo_journal.core.presentation.components.TopicTag
 import com.example.echo_journal.core.presentation.components.TopicTextField
 import com.example.echo_journal.settings.presentation.SettingsAction
 import com.example.echo_journal.settings.presentation.SettingsState.TopicState
+import com.example.echo_journal.ui.theme.EchoUltraLightGray
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -83,7 +83,7 @@ private fun TopicAddButton(
             .size(32.dp)
             .clickable { onClick() },
         shape = CircleShape,
-        color = Color(0xFFF2F2F7),
+        color = EchoUltraLightGray,
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant
     ) {
         Icon(
