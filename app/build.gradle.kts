@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.bundles.koin)
+    implementation(libs.androidx.material.icons.extended)
 
     // Room components
     implementation(libs.room.runtime)
