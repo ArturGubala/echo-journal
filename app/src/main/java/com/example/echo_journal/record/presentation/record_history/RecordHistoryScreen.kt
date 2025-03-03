@@ -4,15 +4,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,10 +22,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.echo_journal.R
 import com.example.echo_journal.core.presentation.util.ObserveAsEvents
+import com.example.echo_journal.record.presentation.components.RecordHistoryFAB
 import com.example.echo_journal.settings.navigation.navigateToSettings
 import org.koin.androidx.compose.koinViewModel
 
@@ -82,22 +77,21 @@ private fun RecordHistoryScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { },
-                shape = CircleShape,
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                modifier = Modifier
-                    .size(64.dp)
-                    .offset(y = (-23).dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = "Floating action button.",
-                    modifier = Modifier.size(32.dp)
-                )
-            }
+            RecordHistoryFAB(
+                onResult = { isGranted, isLongClicked ->
+                    if (isGranted) {
+                        if (isLongClicked) {
+
+                        } else {
+
+                        }
+                    }
+                },
+                onLongPressRelease = { isEntryCanceled ->
+
+                }
+            )
         },
-        floatingActionButtonPosition = androidx.compose.material3.FabPosition.End,
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,
         contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0),
