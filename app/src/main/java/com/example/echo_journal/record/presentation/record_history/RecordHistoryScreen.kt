@@ -1,9 +1,5 @@
 package com.example.echo_journal.record.presentation.record_history
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -16,15 +12,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.example.echo_journal.R
 import com.example.echo_journal.core.presentation.util.ObserveAsEvents
+import com.example.echo_journal.record.presentation.components.EmptyRecordHistoryScreen
 import com.example.echo_journal.record.presentation.components.RecordHistoryFAB
 import com.example.echo_journal.settings.navigation.navigateToSettings
 import org.koin.androidx.compose.koinViewModel
@@ -96,26 +91,9 @@ private fun RecordHistoryScreen(
         contentColor = MaterialTheme.colorScheme.onBackground,
         contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0),
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment =   Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_no_entries),
-                contentDescription = "No entries icon"
-            )
-            Text(
-                text = "No Entries",
-                style = MaterialTheme.typography.titleLarge
-            )
-            Text(
-                text = "Start recording your first Echo ",
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
+        EmptyRecordHistoryScreen(
+            modifier = Modifier.padding(padding)
+        )
     }
 }
 
