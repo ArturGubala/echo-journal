@@ -12,15 +12,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.echo_journal.R
 import com.example.echo_journal.core.presentation.util.ObserveAsEvents
 import com.example.echo_journal.record.presentation.components.EmptyRecordHistoryScreen
 import com.example.echo_journal.record.presentation.components.RecordHistoryFAB
+import com.example.echo_journal.record.presentation.components.RecordingBottomSheet
 import com.example.echo_journal.settings.navigation.navigateToSettings
 import org.koin.androidx.compose.koinViewModel
 
@@ -29,6 +31,8 @@ internal fun RecordHistoryRoute(
     navController: NavController,
     viewModel: RecordHistoryViewModel = koinViewModel()
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is RecordHistoryEvent.NavigateToSettings -> {
@@ -38,14 +42,16 @@ internal fun RecordHistoryRoute(
     }
 
     RecordHistoryScreen(
-        onAction = viewModel::onAction
+        onAction = viewModel::onAction,
+        state = state
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun RecordHistoryScreen(
-    onAction: (RecordHistoryAction) -> Unit
+    onAction: (RecordHistoryAction) -> Unit,
+    state: RecordHistoryState
 ) {
 
     Scaffold(
@@ -78,7 +84,7 @@ private fun RecordHistoryScreen(
                         if (isLongClicked) {
 
                         } else {
-
+                            onAction(RecordHistoryAction.StartRecording)
                         }
                     }
                 },
@@ -91,14 +97,30 @@ private fun RecordHistoryScreen(
         contentColor = MaterialTheme.colorScheme.onBackground,
         contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0),
     ) { padding ->
-        EmptyRecordHistoryScreen(
+
+        if (state.entries.isEmpty())
+            EmptyRecordHistoryScreen(
+                modifier = Modifier.padding(padding)
+            )
+        else {
+            HomeScreen(
+                state = state,
+                onAction = onAction
+            )
+        }
+
+        RecordingBottomSheet(
+            recordHistorySheetState = state.recordHistorySheetState,
+            onAction = onAction,
             modifier = Modifier.padding(padding)
         )
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-private fun RecordHistoryScreenPreview() {
-//    RecordHistoryScreen()
+private fun HomeScreen(
+    state: RecordHistoryState,
+    onAction: (RecordHistoryAction) -> Unit
+) {
+
 }
