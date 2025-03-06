@@ -57,16 +57,16 @@ fun RecordingBottomSheet(
             sheetState = sheetState,
         ) {
             Column(
-                modifier = modifier,
+                modifier = modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 BottomSheetHeader(
-                    modifier = Modifier.padding(vertical = 16.dp),
+                    modifier = Modifier.padding(vertical = 8.dp),
                     isRecording = recordHistorySheetState.isRecording,
                     recordingTime = recordHistorySheetState.recordingTime
                 )
                 RecordButtons(
-                    modifier = Modifier.padding(bottom = 16.dp),
+                    modifier = Modifier.padding(vertical = 42.dp, horizontal = 16.dp),
                     isRecording = recordHistorySheetState.isRecording,
                     onCancelClick = {},
                     onRecordClick = {},

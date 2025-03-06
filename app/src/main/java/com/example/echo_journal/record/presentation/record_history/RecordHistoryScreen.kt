@@ -1,6 +1,9 @@
 package com.example.echo_journal.record.presentation.record_history
 
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -95,7 +98,8 @@ private fun RecordHistoryScreen(
         },
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,
-        contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0, 0, 0, 0),
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing)
     ) { padding ->
 
         if (state.entries.isEmpty())
@@ -111,8 +115,7 @@ private fun RecordHistoryScreen(
 
         RecordingBottomSheet(
             recordHistorySheetState = state.recordHistorySheetState,
-            onAction = onAction,
-            modifier = Modifier.padding(padding)
+            onAction = onAction
         )
     }
 }
