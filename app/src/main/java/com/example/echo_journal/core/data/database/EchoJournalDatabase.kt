@@ -2,6 +2,9 @@ package com.example.echo_journal.core.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.example.echo_journal.core.data.converter.MoodTypeConverter
+import com.example.echo_journal.core.data.database.dao.RecordDao
 import com.example.echo_journal.core.data.database.entity.RecordEntity
 
 @Database(
@@ -12,4 +15,10 @@ import com.example.echo_journal.core.data.database.entity.RecordEntity
     exportSchema = false
 )
 
-abstract class EchoJournalDatabase : RoomDatabase()
+@TypeConverters(
+    MoodTypeConverter::class
+)
+
+abstract class EchoJournalDatabase : RoomDatabase() {
+    abstract val recordDao: RecordDao
+}

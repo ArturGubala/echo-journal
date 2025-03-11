@@ -13,4 +13,7 @@ val databaseModule = module {
             "echo_journal_db"
         ).build()
     }
+    single {
+        get<EchoJournalDatabase>().recordDao
+    }
 }
