@@ -51,3 +51,13 @@ fun getMoodUiByMood(mood: Mood): MoodUi {
         isSelected = false
     )
 }
+
+fun getMoodStringByMood(mood: Mood): String {
+    return when (mood) {
+        Mood.EXCITED -> "EXCITED"
+        Mood.PEACEFUL -> "PEACEFUL"
+        Mood.NEUTRAL -> "NEUTRAL"
+        Mood.SAD -> "SAD"
+        Mood.STRESSED -> "STRESSED"
+    }
+}
