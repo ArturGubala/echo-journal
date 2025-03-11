@@ -3,7 +3,9 @@ package com.example.echo_journal.core.data.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.echo_journal.core.data.converter.InstantConverter
 import com.example.echo_journal.core.data.converter.MoodTypeConverter
+import com.example.echo_journal.core.data.converter.TopicsConverter
 import com.example.echo_journal.core.data.database.dao.RecordDao
 import com.example.echo_journal.core.data.database.entity.RecordEntity
 
@@ -16,7 +18,9 @@ import com.example.echo_journal.core.data.database.entity.RecordEntity
 )
 
 @TypeConverters(
-    MoodTypeConverter::class
+    MoodTypeConverter::class,
+    InstantConverter::class,
+    TopicsConverter::class
 )
 
 abstract class EchoJournalDatabase : RoomDatabase() {
