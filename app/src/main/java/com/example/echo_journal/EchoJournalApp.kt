@@ -15,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.example.echo_journal.core.data.audio.di.audioModule
 import com.example.echo_journal.core.data.database.di.databaseModule
 import com.example.echo_journal.core.datastore.di.dataStoreModule
 import com.example.echo_journal.core.presentation.navigation.EchoJournalNavHost
@@ -34,7 +35,8 @@ class EchoJournalCore: Application() {
                 recordHistoryViewModelModule,
                 dataStoreModule,
                 settingsViewModelModule,
-                databaseModule
+                databaseModule,
+                audioModule
             )
         }
     }

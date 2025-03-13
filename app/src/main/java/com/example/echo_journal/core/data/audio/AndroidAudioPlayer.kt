@@ -1,4 +1,4 @@
-package com.example.echo_journal.core.data
+package com.example.echo_journal.core.data.audio
 
 import android.content.Context
 import android.media.MediaPlayer
