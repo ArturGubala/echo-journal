@@ -102,7 +102,7 @@ private fun RecordHistoryScreen(
         modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing)
     ) { padding ->
 
-        if (state.entries.isEmpty())
+        if (state.records.isEmpty())
             EmptyRecordHistoryScreen(
                 modifier = Modifier.padding(padding)
             )

@@ -44,7 +44,7 @@ fun SettingsCardPreview() {
         header =  {
             CardHeader(
                 title = "My mood",
-                subtitle = "Select default mood to apply to all new entries"
+                subtitle = "Select default mood to apply to all new records"
             )
         },
         content = {

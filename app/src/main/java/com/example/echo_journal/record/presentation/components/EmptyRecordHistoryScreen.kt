@@ -33,7 +33,7 @@ fun EmptyRecordHistoryScreen(
     ) {
         Image(
             painter = painterResource(id = R.drawable.ic_no_entries),
-            contentDescription = "No entries icon"
+            contentDescription = "No records icon"
         )
         Spacer(modifier = Modifier.height(34.dp))
         Text(
