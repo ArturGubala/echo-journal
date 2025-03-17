@@ -66,7 +66,20 @@ class RecordHistoryViewModel(
                 toggleSheetState()
                 stopRecording(action.saveFile)
             }
-            is RecordHistoryAction.PermissionDialogOpend -> {}
+            is RecordHistoryAction.PermissionDialogOpend -> {
+                _state.value = _state.value.copy(isPermissionDialogVisible = action.isOpen)
+            }
+
+            is RecordHistoryAction.OnStartRecordingClick -> {
+                startRecording()
+            }
+            is RecordHistoryAction.OnStopRecordingClick -> {
+                stopRecording(action.saveFile)
+            }
+
+            is RecordHistoryAction.RecordPlayClick -> playRecord(action.recordId)
+            is RecordHistoryAction.RecordPauseClick -> pauseRecord(action.recordId)
+            is RecordHistoryAction.RecordResumeClick -> resumeRecord(action.recordId)
         }
     }
 

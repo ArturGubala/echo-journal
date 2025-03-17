@@ -8,7 +8,8 @@ import java.time.Instant
 
 data class RecordHistoryState(
     val records: Map<Instant, List<RecordHolderState>> = mapOf(),
-    val recordHistorySheetState: RecordHistorySheetState = RecordHistorySheetState()
+    val recordHistorySheetState: RecordHistorySheetState = RecordHistorySheetState(),
+    val isPermissionDialogVisible: Boolean = false
 ) {
 
     @Stable

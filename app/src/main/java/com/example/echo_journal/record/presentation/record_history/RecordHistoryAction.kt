@@ -7,6 +7,12 @@ interface RecordHistoryAction {
     data object PauseRecording : RecordHistoryAction
     data object ResumeRecording : RecordHistoryAction
     data class StopRecording(val saveFile: Boolean) : RecordHistoryAction
+    data object OnStartRecordingClick : RecordHistoryAction
+    data class OnStopRecordingClick(val saveFile: Boolean) : RecordHistoryAction
+
+    data class RecordPlayClick(val recordId: Long) : RecordHistoryAction
+    data class RecordPauseClick(val recordId: Long) : RecordHistoryAction
+    data class RecordResumeClick(val recordId: Long) : RecordHistoryAction
 
     data class PermissionDialogOpend(val isOpen: Boolean) : RecordHistoryAction
 }
