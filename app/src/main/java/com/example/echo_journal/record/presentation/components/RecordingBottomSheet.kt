@@ -68,9 +68,21 @@ fun RecordingBottomSheet(
                 RecordButtons(
                     modifier = Modifier.padding(vertical = 42.dp, horizontal = 16.dp),
                     isRecording = recordHistorySheetState.isRecording,
-                    onCancelClick = {},
-                    onRecordClick = {},
-                    onPauseClick = {}
+                    onCancelClick = { onAction(RecordHistoryAction.StopRecording(saveFile = false)) },
+                    onRecordClick = {
+                        if (recordHistorySheetState.isRecording) {
+                            onAction(RecordHistoryAction.StopRecording(saveFile = true))
+                        } else {
+                            onAction(RecordHistoryAction.ResumeRecording)
+                        }
+                    },
+                    onPauseClick = {
+                        if (recordHistorySheetState.isRecording) {
+                            onAction(RecordHistoryAction.PauseRecording)
+                        } else {
+                            onAction(RecordHistoryAction.StopRecording(saveFile = true))
+                        }
+                    }
                 )
             }
         }
