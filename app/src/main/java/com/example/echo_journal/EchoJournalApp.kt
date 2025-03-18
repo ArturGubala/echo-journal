@@ -19,7 +19,7 @@ import com.example.echo_journal.core.data.audio.di.audioModule
 import com.example.echo_journal.core.data.database.di.databaseModule
 import com.example.echo_journal.core.datastore.di.dataStoreModule
 import com.example.echo_journal.core.presentation.navigation.EchoJournalNavHost
-import com.example.echo_journal.record.di.recordHistoryViewModelModule
+import com.example.echo_journal.record.di.recordViewModelModule
 import com.example.echo_journal.settings.di.settingsViewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -32,7 +32,7 @@ class EchoJournalCore: Application() {
             androidLogger()
             androidContext(this@EchoJournalCore)
             modules(
-                recordHistoryViewModelModule,
+                recordViewModelModule,
                 dataStoreModule,
                 settingsViewModelModule,
                 databaseModule,
