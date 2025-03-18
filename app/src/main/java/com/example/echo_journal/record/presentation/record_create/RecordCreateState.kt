@@ -5,14 +5,15 @@ import com.example.echo_journal.core.domain.MoodUi
 import com.example.echo_journal.core.domain.PlayerState
 import com.example.echo_journal.core.domain.topic.Topic
 
-class RecordCreateState(
-    val currentMood: MoodUi,
+data class RecordCreateState(
+    val currentMood: MoodUi? = null,
     val titleValue: String = "",
     val topicValue: String = "",
     val descriptionValue: String = "",
     val playerState: PlayerState = PlayerState(),
     val currentTopics: List<Topic> = emptyList(),
     val foundTopics: List<Topic> = emptyList(),
+    val topics: List<Topic> = emptyList(),
     val recordSheetState: RecordSheetState = RecordSheetState(),
     val showLeaveDialog: Boolean = false
 ) {
