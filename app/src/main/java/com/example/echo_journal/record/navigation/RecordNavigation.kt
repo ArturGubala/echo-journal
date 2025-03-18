@@ -8,8 +8,11 @@ import com.example.echo_journal.record.presentation.record_history.RecordHistory
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToRecordHistory(navOptions: NavOptions? = null) = navigate(RecordHistoryScreen, navOptions)
-fun NavController.navigateToCreateRecord(path: String, navOptions: NavOptions? = null) {
-    navigate(CreateRecordScreen(path = path), navOptions)
+fun NavController.navigateToCreateRecord(audioFilePath: String, amplitudeLogFilePath: String, navOptions: NavOptions? = null) {
+    navigate(
+        CreateRecordScreen(audioFilePath = audioFilePath, amplitudeLogFilePath = amplitudeLogFilePath),
+        navOptions
+    )
 }
 
 fun NavGraphBuilder.recordHistoryScreen(navController: NavController) {
@@ -29,5 +32,6 @@ object RecordHistoryScreen
 
 @Serializable
 data class CreateRecordScreen(
-    val path: String
+    val audioFilePath: String,
+    val amplitudeLogFilePath: String
 )
