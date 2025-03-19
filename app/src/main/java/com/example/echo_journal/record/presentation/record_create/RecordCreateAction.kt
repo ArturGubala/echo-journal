@@ -14,7 +14,7 @@ sealed interface RecordCreateAction {
     data class DescriptionValueChanged(val description: String) : RecordCreateAction
 
     data class TopicValueChanged(val topic: String) : RecordCreateAction
-    data class TagClearClicked(val tag: String) : RecordCreateAction
+    data class TagClearClicked(val topic: Topic) : RecordCreateAction
 
     data class TopicClicked(val topic: Topic) : RecordCreateAction
     data object CreateTopicClicked : RecordCreateAction

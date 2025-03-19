@@ -12,6 +12,22 @@ import com.example.echo_journal.core.domain.record.Record
 import com.example.echo_journal.core.domain.topic.Topic
 import com.example.echo_journal.core.presentation.util.getMoodByName
 import com.example.echo_journal.core.presentation.util.getMoodUiByMood
+import com.example.echo_journal.record.presentation.record_create.RecordCreateAction.BottomSheetClosed
+import com.example.echo_journal.record.presentation.record_create.RecordCreateAction.BottomSheetOpened
+import com.example.echo_journal.record.presentation.record_create.RecordCreateAction.CreateTopicClicked
+import com.example.echo_journal.record.presentation.record_create.RecordCreateAction.DescriptionValueChanged
+import com.example.echo_journal.record.presentation.record_create.RecordCreateAction.LeaveDialogConfirmClicked
+import com.example.echo_journal.record.presentation.record_create.RecordCreateAction.LeaveDialogToggled
+import com.example.echo_journal.record.presentation.record_create.RecordCreateAction.MoodSelected
+import com.example.echo_journal.record.presentation.record_create.RecordCreateAction.PauseClicked
+import com.example.echo_journal.record.presentation.record_create.RecordCreateAction.PlayClicked
+import com.example.echo_journal.record.presentation.record_create.RecordCreateAction.ResumeClicked
+import com.example.echo_journal.record.presentation.record_create.RecordCreateAction.SaveButtonClicked
+import com.example.echo_journal.record.presentation.record_create.RecordCreateAction.SheetConfirmClicked
+import com.example.echo_journal.record.presentation.record_create.RecordCreateAction.TagClearClicked
+import com.example.echo_journal.record.presentation.record_create.RecordCreateAction.TitleValueChanged
+import com.example.echo_journal.record.presentation.record_create.RecordCreateAction.TopicClicked
+import com.example.echo_journal.record.presentation.record_create.RecordCreateAction.TopicValueChanged
 import com.example.echo_journal.utils.InstantFormatter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
@@ -76,22 +92,41 @@ class RecordCreateViewModel(
 
     fun onAction(action: RecordCreateAction) {
         when (action) {
-            RecordCreateAction.BottomSheetClosed -> TODO()
-            is RecordCreateAction.BottomSheetOpened -> TODO()
-            RecordCreateAction.CreateTopicClicked -> TODO()
-            is RecordCreateAction.DescriptionValueChanged -> TODO()
-            RecordCreateAction.LeaveDialogConfirmClicked -> TODO()
-            RecordCreateAction.LeaveDialogToggled -> TODO()
-            is RecordCreateAction.MoodSelected -> TODO()
-            RecordCreateAction.PauseClicked -> TODO()
-            RecordCreateAction.PlayClicked -> TODO()
-            RecordCreateAction.ResumeClicked -> TODO()
-            is RecordCreateAction.SaveButtonClicked -> TODO()
-            is RecordCreateAction.SheetConfirmClicked -> TODO()
-            is RecordCreateAction.TagClearClicked -> TODO()
-            is RecordCreateAction.TitleValueChanged -> TODO()
-            is RecordCreateAction.TopicClicked -> TODO()
-            is RecordCreateAction.TopicValueChanged -> TODO()
+            BottomSheetClosed -> toggleSheetState()
+            is BottomSheetOpened -> toggleSheetState(action.mood)
+            is SheetConfirmClicked -> setCurrentMood(action.mood)
+
+            is MoodSelected -> updateActiveMood(action.mood)
+
+            is TitleValueChanged -> {
+                _state.value = _state.value.copy(titleValue = action.title)
+            }
+            is DescriptionValueChanged -> {
+                _state.value = _state.value.copy(descriptionValue = action.description)
+            }
+
+            is TopicValueChanged -> updateTopic(action.topic)
+            is TagClearClicked -> {
+                _state.value = _state.value.copy(currentTopics = _state.value.currentTopics - action.topic)
+            }
+
+            is TopicClicked -> updateCurrentTopics(action.topic)
+            CreateTopicClicked -> addNewTopic()
+
+            PauseClicked -> playAudio()
+            PlayClicked -> pauseAudio()
+            ResumeClicked -> resumeAudio()
+
+            is SaveButtonClicked -> saveEntry(action.outputDir)
+
+            LeaveDialogToggled -> toggleLeaveDialog()
+            LeaveDialogConfirmClicked -> {
+                toggleLeaveDialog()
+                audioPlayer.stop()
+                viewModelScope.launch {
+                    eventChannel.send(RecordCreateEvent.NavigateBack)
+                }
+            }
         }
     }
 
