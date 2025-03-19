@@ -4,6 +4,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
+import com.example.echo_journal.record.presentation.record_create.RecordCreateRoute
 import com.example.echo_journal.record.presentation.record_history.RecordHistoryRoute
 import kotlinx.serialization.Serializable
 
@@ -24,7 +26,14 @@ fun NavGraphBuilder.recordHistoryScreen(navController: NavController) {
 fun NavGraphBuilder.createRecordScreen(
         onBackClick: () -> Unit
 ) {
-    composable<CreateRecordScreen> {}
+    composable<CreateRecordScreen> {
+        val args = it.toRoute<CreateRecordScreen>()
+        RecordCreateRoute(
+            onBackClick = onBackClick,
+            audioFilePath = args.audioFilePath,
+            amplitudeLogFilePath = args.amplitudeLogFilePath
+        )
+    }
 }
 
 @Serializable
