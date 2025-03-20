@@ -15,4 +15,10 @@ interface RecordHistoryAction {
     data class RecordResumeClick(val recordId: Long) : RecordHistoryAction
 
     data class PermissionDialogOpend(val isOpen: Boolean) : RecordHistoryAction
+
+    data object MoodsFilterToggled : RecordHistoryAction
+    data object TopicsFilterToggled : RecordHistoryAction
+    data object MoodsFilterClearClicked : RecordHistoryAction
+    data object TopicsFilterClearClicked : RecordHistoryAction
+
 }

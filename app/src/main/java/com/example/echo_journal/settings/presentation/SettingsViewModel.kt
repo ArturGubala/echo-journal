@@ -9,6 +9,7 @@ import com.example.echo_journal.core.domain.MoodUi
 import com.example.echo_journal.core.domain.topic.Topic
 import com.example.echo_journal.core.presentation.util.getMood
 import com.example.echo_journal.core.presentation.util.getMoodByName
+import com.example.echo_journal.core.presentation.util.getMoodColorByMoodName
 import com.example.echo_journal.core.presentation.util.getMoodColoured
 import com.example.echo_journal.core.presentation.util.getMoodUiByMood
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -99,7 +100,8 @@ class SettingsViewModel(
                 MoodUi(
                     resId = getMood(it),
                     name = it.name,
-                    isSelected = false
+                    isSelected = false,
+                    moodColor = getMoodColorByMoodName(name = it.name)
                 )
             )
         }

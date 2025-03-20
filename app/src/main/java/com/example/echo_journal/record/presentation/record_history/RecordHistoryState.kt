@@ -8,6 +8,8 @@ import java.time.Instant
 
 data class RecordHistoryState(
     val records: Map<Instant, List<RecordHolderState>> = mapOf(),
+    val filterState: FilterState = FilterState(),
+    val isFilterActive: Boolean = false,
     val recordHistorySheetState: RecordHistorySheetState = RecordHistorySheetState(),
     val isPermissionDialogVisible: Boolean = false
 ) {
@@ -26,4 +28,17 @@ data class RecordHistoryState(
         val isRecording: Boolean = true,
         val recordingTime: String = Constants.DEFAULT_FORMATTED_TIME
     )
+
+    @Stable
+    data class FilterState(
+        val isMoodsOpen: Boolean = false,
+        val isTopicsOpen: Boolean = false,
+        val moodFilterItems: List<FilterItem> = listOf(),
+        val topicFilterItems: List<FilterItem> = listOf()
+    ) {
+        data class FilterItem(
+            val title: String = "",
+            val isChecked: Boolean = false
+        )
+    }
 }

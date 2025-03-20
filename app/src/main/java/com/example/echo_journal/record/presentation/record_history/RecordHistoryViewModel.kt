@@ -141,7 +141,7 @@ class RecordHistoryViewModel(
             stopRecordsPlaying()
             viewModelScope.launch {
                 eventChannel.send(
-                    RecordHistoryEvent.NavigateToEntryScreen(
+                    RecordHistoryEvent.NavigateToRecordCreateScreen(
                         Uri.encode(audioFilePath), Uri.encode(amplitudeLogFilePath)
                     )
                 )

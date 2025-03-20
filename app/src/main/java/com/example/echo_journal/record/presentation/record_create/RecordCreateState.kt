@@ -22,7 +22,7 @@ data class RecordCreateState(
 
     @Stable
     data class RecordSheetState(
-        val isOpened: Boolean = false,
+        val isOpen: Boolean = false,
         val activeMood: MoodUi? = null,
         val moods: List<MoodUi> = emptyList()
     )

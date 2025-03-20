@@ -1,5 +1,6 @@
 package com.example.echo_journal.record.presentation.record_history
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -16,14 +17,23 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.IntOffset
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.echo_journal.R
 import com.example.echo_journal.core.presentation.util.ObserveAsEvents
+import com.example.echo_journal.record.navigation.navigateToCreateRecord
+import com.example.echo_journal.record.presentation.components.EchoFilter
 import com.example.echo_journal.record.presentation.components.EmptyRecordHistoryScreen
+import com.example.echo_journal.record.presentation.components.JournalEntries
 import com.example.echo_journal.record.presentation.components.RecordHistoryFAB
 import com.example.echo_journal.record.presentation.components.RecordingBottomSheet
 import com.example.echo_journal.settings.navigation.navigateToSettings
@@ -41,9 +51,16 @@ internal fun RecordHistoryRoute(
             is RecordHistoryEvent.NavigateToSettings -> {
                 navController.navigateToSettings()
             }
-        }
-    }
 
+            is RecordHistoryEvent.NavigateToRecordCreateScreen -> {
+                navController.navigateToCreateRecord(
+                    audioFilePath = event.audioFilePath,
+                    amplitudeLogFilePath = event.amplitudeLogFilePath
+                )
+            }
+        }
+
+    }
     RecordHistoryScreen(
         onAction = viewModel::onAction,
         state = state
@@ -66,7 +83,7 @@ private fun RecordHistoryScreen(
                 ),
                 title = {
                     Text(
-                        text = stringResource(R.string.record_screen_top_appbar_title),
+                        text = stringResource(R.string.your_echojournal),
                         style = MaterialTheme.typography.titleLarge,
                         color = Color.Black
                     )
@@ -75,7 +92,8 @@ private fun RecordHistoryScreen(
                     IconButton(onClick = { onAction(RecordHistoryAction.OnSettingsClick) }) {
                         Icon(
                             imageVector = Icons.Filled.Settings,
-                            contentDescription = "Settings")
+                            contentDescription = "Settings"
+                        )
                     }
                 }
             )
@@ -125,5 +143,49 @@ private fun HomeScreen(
     state: RecordHistoryState,
     onAction: (RecordHistoryAction) -> Unit
 ) {
+    var filterOffset by remember { mutableStateOf(IntOffset.Zero) }
 
+    Column {
+        EchoFilter(
+            filterState = state.filterState,
+            onAction = onAction,
+            modifier = Modifier
+                .onGloballyPositioned { coordinates ->
+                    filterOffset = IntOffset(
+                        coordinates.positionInParent().x.toInt(),
+                        coordinates.positionInParent().y.toInt() + coordinates.size.height
+                    )
+                }
+        )
+
+        if (state.records.isEmpty() && state.isFilterActive) {
+            EmptyRecordHistoryScreen(
+                title = stringResource(R.string.no_entries_found),
+                supportingText = stringResource(R.string.no_entries_found_supporting_text)
+            )
+        }
+
+        JournalEntries(
+            entryNotes = state.records,
+            onAction = onAction
+        )
+    }
+
+//    if (state.filterState.isMoodsOpen) {
+//        FilterList(
+//            filterItems = state.filterState.moodFilterItems,
+//            onItemClick = { onAction(RecordHistoryAction.MoodFilterItemClicked(it)) },
+//            onDismissClicked = { onAction(RecordHistoryAction.MoodsFilterToggled) },
+//            startOffset = filterOffset
+//        )
+//    }
+//
+//    if (state.filterState.isTopicsOpen) {
+//        FilterList(
+//            filterItems = state.filterState.topicFilterItems,
+//            onItemClick = { onAction(RecordHistoryAction.TopicFilterItemClicked(it)) },
+//            onDismissClicked = { onAction(RecordHistoryAction.TopicsFilterToggled) },
+//            startOffset = filterOffset
+//        )
+//    }
 }

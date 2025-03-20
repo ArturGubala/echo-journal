@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.echo_journal.record.navigation.RecordHistoryScreen
+import com.example.echo_journal.record.navigation.createRecordScreen
 import com.example.echo_journal.record.navigation.recordHistoryScreen
 import com.example.echo_journal.settings.navigation.settingsScreen
 
@@ -21,6 +22,9 @@ fun EchoJournalNavHost(
     ) {
         recordHistoryScreen(navController)
         settingsScreen(
+            onBackClick = { navController.popBackStack() }
+        )
+        createRecordScreen (
             onBackClick = { navController.popBackStack() }
         )
     }

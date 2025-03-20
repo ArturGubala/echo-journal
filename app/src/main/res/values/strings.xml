@@ -23,4 +23,27 @@
     <string name="recording_paused">Recording paused</string>
     <string name="pause_button">Pause button</string>
     <string name="recording_button">Recording button</string>
+
+    <string name="choose_mood">Choose Mood</string>
+    <string name="add_title">Add Title…</string>
+    <string name="add_description">Add Description</string>
+    <string name="how_are_you_doing">How are you doing?</string>
+    <string name="confirm">Confirm</string>
+    <string name="my_mood">My Mood</string>
+    <string name="mood_header_description">Select default mood to apply to all new entries</string>
+    <string name="settings">Settings</string>
+    <string name="my_topics">My Topics</string>
+    <string name="topic_header_description">Select default topics to apply to all new entries</string>
+    <string name="all_moods">All Moods</string>
+    <string name="all_topics">All Topics</string>
+    <string name="widget_name">Echo widget</string>
+    <string name="no_entries_found">No Entries Found</string>
+    <string name="no_entries_found_supporting_text">Try adjusting your filters to find what you\'re looking for</string>
+    <string name="leave">Leave</string>
+    <string name="leave_dialog_supporting_text">Are you sure you want to cancel this voice memo? This action cannot be undone.</string>
+    <string name="play_button">Play button</string>
+    <string name="clear_filter">Clear filter</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="your_echojournal">Your EchoJournal</string>
 </resources>

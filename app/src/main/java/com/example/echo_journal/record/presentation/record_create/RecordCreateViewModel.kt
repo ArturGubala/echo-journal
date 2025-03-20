@@ -170,7 +170,7 @@ class RecordCreateViewModel(
     private fun toggleSheetState(activeMood: MoodUi? = null) {
         _state.value = _state.value.copy(
             recordSheetState = _state.value.recordSheetState.copy(
-                isOpened = !_state.value.recordSheetState.isOpened,
+                isOpen = !_state.value.recordSheetState.isOpen,
                 activeMood = activeMood
             )
         )
