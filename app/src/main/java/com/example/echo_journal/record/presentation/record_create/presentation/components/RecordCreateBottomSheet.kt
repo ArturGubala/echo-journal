@@ -5,6 +5,8 @@ package com.example.echo_journal.record.presentation.record_create.presentation.
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -23,7 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.echo_journal.R
+import com.example.echo_journal.core.domain.Mood
 import com.example.echo_journal.core.presentation.components.IconWithText
+import com.example.echo_journal.core.presentation.util.getMoodUiByMood
 import com.example.echo_journal.record.presentation.record_create.RecordCreateAction
 import com.example.echo_journal.record.presentation.record_create.RecordCreateState
 
@@ -56,21 +60,29 @@ fun RecordCreateSheet(
                     style = MaterialTheme.typography.titleMedium
                 )
 
-                recordCreateSheetState.moods.forEach {
-                    IconWithText(
-                        id = it.resId,
-                        text = it.name.lowercase().replaceFirstChar { it.uppercase() },
-                        modifier = Modifier
-                            .weight(1f)
-                            .clickable(
-                                interactionSource = null,
-                                indication = null
-                            ) {
-                                onAction(
-                                    RecordCreateAction.MoodSelected(it)
-                                )
-                            }
-                    )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Mood.entries.forEach {
+                        val moodUi = if (recordCreateSheetState.activeMood != null && recordCreateSheetState.activeMood.name == it.name) recordCreateSheetState.activeMood else getMoodUiByMood(it)
+                        IconWithText(
+                            id = moodUi.resId,
+                            text = moodUi.name.lowercase().replaceFirstChar { it.uppercase() },
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable(
+                                    interactionSource = null,
+                                    indication = null
+                                ) {
+                                    onAction(
+                                        RecordCreateAction.MoodSelected(moodUi)
+                                    )
+                                }
+                        )
+                    }
                 }
 
                 RecordCreateBottomButtons(

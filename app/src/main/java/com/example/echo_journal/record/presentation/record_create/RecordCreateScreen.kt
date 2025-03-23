@@ -5,17 +5,21 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -66,7 +70,7 @@ internal fun RecordCreateRoute(
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             RecordCreateEvent.NavigateBack -> {
-                onBackClick
+                onBackClick()
             }
         }
     }
@@ -85,6 +89,10 @@ private fun RecordCreateScreenRoot(
     onAction: (RecordCreateAction) -> Unit
 ) {
     Scaffold(
+        modifier = Modifier
+            .windowInsetsPadding(WindowInsets.safeDrawing)
+            .fillMaxWidth(),
+        contentWindowInsets = ScaffoldDefaults.contentWindowInsets,
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -111,10 +119,11 @@ private fun RecordCreateScreenRoot(
             )
         },
         containerColor = MaterialTheme.colorScheme.surface
-    ) {
+    ) { padding ->
         RecordCreateScreen(
             state = state,
-            onAction = onAction
+            onAction = onAction,
+            modifier = Modifier.padding(padding)
         )
         RecordCreateSheet(
             recordCreateSheetState = state.recordSheetState,
@@ -137,9 +146,12 @@ private fun RecordCreateScreenRoot(
 @Composable
 private fun RecordCreateScreen(
     state: RecordCreateState,
-    onAction: (RecordCreateAction) -> Unit
+    onAction: (RecordCreateAction) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Box {
+    Box(
+        modifier = modifier
+    ) {
         var topicOffset by remember { mutableStateOf(IntOffset.Zero) }
 
         val verticalSpace = 16.dp.toInt()
@@ -147,7 +159,7 @@ private fun RecordCreateScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(vertical = 8.dp),
+                .padding(vertical = 8.dp, horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(verticalSpace.toDp())
         ) {
             // AddTitle text field

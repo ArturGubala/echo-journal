@@ -1,6 +1,5 @@
 package com.example.echo_journal.record.presentation.record_history
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.echo_journal.core.data.database.RoomRecordDataSource
@@ -17,6 +16,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class RecordHistoryViewModel(
@@ -67,7 +67,9 @@ class RecordHistoryViewModel(
                 stopRecording(action.saveFile)
             }
             is RecordHistoryAction.PermissionDialogOpend -> {
-                _state.value = _state.value.copy(isPermissionDialogVisible = action.isOpen)
+                _state.update {
+                    it.copy(isPermissionDialogVisible = action.isOpen)
+                }
             }
 
             is RecordHistoryAction.OnStartRecordingClick -> {
@@ -115,7 +117,9 @@ class RecordHistoryViewModel(
         stopWatchJob = viewModelScope.launch {
             stopWatch.formattedTime.collect {
                 val updatedSheetState = _state.value.recordHistorySheetState.copy(recordingTime = it)
-                _state.value = _state.value.copy(recordHistorySheetState = updatedSheetState)
+                _state.update {
+                    it.copy(recordHistorySheetState = updatedSheetState)
+                }
             }
         }
     }
@@ -142,7 +146,7 @@ class RecordHistoryViewModel(
             viewModelScope.launch {
                 eventChannel.send(
                     RecordHistoryEvent.NavigateToRecordCreateScreen(
-                        Uri.encode(audioFilePath), Uri.encode(amplitudeLogFilePath)
+                        audioFilePath, amplitudeLogFilePath
                     )
                 )
             }
@@ -191,7 +195,9 @@ class RecordHistoryViewModel(
                 }
             }
         }
-        _state.value = _state.value.copy(records = updatedRecords)
+        _state.update {
+            it.copy(records = updatedRecords)
+        }
     }
 
     private fun updatePlayerStateCurrentPosition(
@@ -217,7 +223,9 @@ class RecordHistoryViewModel(
                 }
             }
         }
-        _state.value = _state.value.copy(records = updatedRecords)
+        _state.update {
+            it.copy(records = updatedRecords)
+        }
     }
 
     private fun updatePlayerStateAction(recordId: Long, action: PlayerState.Action) {
@@ -234,12 +242,14 @@ class RecordHistoryViewModel(
     }
 
     private fun toggleSheetState() {
-        _state.value = _state.value.copy(
-            recordHistorySheetState = _state.value.recordHistorySheetState.copy(
-                isVisible = !_state.value.recordHistorySheetState.isVisible,
-                isRecording = true
+        _state.update{
+            it.copy(
+                recordHistorySheetState = _state.value.recordHistorySheetState.copy(
+                    isVisible = !_state.value.recordHistorySheetState.isVisible,
+                    isRecording = true
+                )
             )
-        )
+        }
     }
 
     private fun toggleRecordingState() {
@@ -249,6 +259,8 @@ class RecordHistoryViewModel(
     }
 
     private fun updateSheetState(updatedSheetState: RecordHistoryState.RecordHistorySheetState) {
-        _state.value = _state.value.copy(recordHistorySheetState = updatedSheetState)
+        _state.update {
+            it.copy(recordHistorySheetState = updatedSheetState)
+        }
     }
 }
