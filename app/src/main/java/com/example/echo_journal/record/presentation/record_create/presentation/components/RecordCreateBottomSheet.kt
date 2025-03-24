@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.echo_journal.R
 import com.example.echo_journal.core.domain.Mood
+import com.example.echo_journal.core.domain.MoodUi
 import com.example.echo_journal.core.presentation.components.IconWithText
 import com.example.echo_journal.core.presentation.util.getMoodUiByMood
 import com.example.echo_journal.record.presentation.record_create.RecordCreateAction
@@ -67,7 +68,12 @@ fun RecordCreateSheet(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Mood.entries.forEach {
-                        val moodUi = if (recordCreateSheetState.activeMood != null && recordCreateSheetState.activeMood.name == it.name) recordCreateSheetState.activeMood else getMoodUiByMood(it)
+                        val moodUi: MoodUi
+                        if (recordCreateSheetState.activeMood != null && recordCreateSheetState.activeMood.name == it.name) {
+                            moodUi = recordCreateSheetState.activeMood
+                        } else {
+                            moodUi = getMoodUiByMood(it)
+                        }
                         IconWithText(
                             id = moodUi.resId,
                             text = moodUi.name.lowercase().replaceFirstChar { it.uppercase() },
