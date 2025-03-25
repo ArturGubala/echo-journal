@@ -6,4 +6,6 @@ interface RecordHistoryEvent {
         val audioFilePath: String,
         val amplitudeLogFilePath: String
     ) : RecordHistoryEvent
+
+    data object DataLoaded : RecordHistoryEvent
 }

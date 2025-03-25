@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package com.example.echo_journal.record.presentation.record_create
 
 import androidx.datastore.core.DataStore
@@ -5,13 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.echo_journal.core.data.database.RoomRecordDataSource
 import com.example.echo_journal.core.datastore.UserPreferences
+import com.example.echo_journal.core.domain.Mood
 import com.example.echo_journal.core.domain.MoodUi
 import com.example.echo_journal.core.domain.PlayerState
 import com.example.echo_journal.core.domain.audio.AudioPlayer
 import com.example.echo_journal.core.domain.record.Record
 import com.example.echo_journal.core.domain.topic.Topic
 import com.example.echo_journal.core.presentation.util.getMoodByName
-import com.example.echo_journal.core.presentation.util.getMoodUiByMood
+import com.example.echo_journal.core.presentation.util.getMoodColorByMoodName
+import com.example.echo_journal.core.presentation.util.getMoodColoured
 import com.example.echo_journal.record.presentation.record_create.RecordCreateAction.BottomSheetClosed
 import com.example.echo_journal.record.presentation.record_create.RecordCreateAction.BottomSheetOpened
 import com.example.echo_journal.record.presentation.record_create.RecordCreateAction.CreateTopicClicked
@@ -38,7 +42,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -55,24 +58,31 @@ class RecordCreateViewModel(
 
     private val _state = MutableStateFlow(RecordCreateState())
     val state = _state
-        .onStart {
-            initializeAudioPlayer()
-            getUserPreferences()
-            subscribeToTopicSearchResults()
-            setupAudioPlayerListeners()
-            observeAudioPlayerCurrentPosition()
-        }
-        .stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000L),
-            RecordCreateState(),
-        )
+//        .onStart {
+//            initializeAudioPlayer()
+//            getUserPreferences()
+//            subscribeToTopicSearchResults()
+//            setupAudioPlayerListeners()
+//            observeAudioPlayerCurrentPosition()
+//        }
+//        .stateIn(
+//            viewModelScope,
+//            SharingStarted.WhileSubscribed(5000L),
+//            RecordCreateState(),
+//        )
+
+    init {
+        initializeAudioPlayer()
+        getUserPreferences()
+        subscribeToTopicSearchResults()
+        setupAudioPlayerListeners()
+        observeAudioPlayerCurrentPosition()
+    }
 
     private val eventChannel = Channel<RecordCreateEvent>()
     val events = eventChannel.receiveAsFlow()
 
     private val searchQuery = MutableStateFlow("")
-    @OptIn(ExperimentalCoroutinesApi::class)
     private val searchResults: StateFlow<List<Topic>> = searchQuery
         .flatMapLatest { query ->
             if (query.isBlank()) {
@@ -99,22 +109,22 @@ class RecordCreateViewModel(
             is MoodSelected -> updateActiveMood(action.mood)
 
             is TitleValueChanged -> {
-                _state.value = _state.value.copy(titleValue = action.title)
+                _state.update { it.copy(titleValue = action.title) }
             }
             is DescriptionValueChanged -> {
-                _state.value = _state.value.copy(descriptionValue = action.description)
+                _state.update { it.copy(descriptionValue = action.description) }
             }
 
             is TopicValueChanged -> updateTopic(action.topic)
             is TagClearClicked -> {
-                _state.value = _state.value.copy(currentTopics = _state.value.currentTopics - action.topic)
+                _state.update { it.copy(currentTopics = _state.value.currentTopics - action.topic) }
             }
 
             is TopicClicked -> updateCurrentTopics(action.topic)
             CreateTopicClicked -> addNewTopic()
 
-            PauseClicked -> playAudio()
-            PlayClicked -> pauseAudio()
+            PauseClicked -> pauseAudio()
+            PlayClicked -> playAudio()
             ResumeClicked -> resumeAudio()
 
             is SaveButtonClicked -> saveEntry(action.outputDir)
@@ -131,13 +141,15 @@ class RecordCreateViewModel(
     }
 
     private fun initializeAudioPlayer() {
-        audioPlayer.initializeFile("")
-        _state.value = _state.value.copy(
-            playerState = _state.value.playerState.copy(
-                duration = audioPlayer.getDuration(),
-                amplitudeLogFilePath = ""
+        audioPlayer.initializeFile(audioFilePath)
+        _state.update {
+            it.copy(
+                playerState = _state.value.playerState.copy(
+                    duration = audioPlayer.getDuration(),
+                    amplitudeLogFilePath = amplitudeLogFilePath
+                )
             )
-        )
+        }
     }
 
     private fun setupAudioPlayerListeners() {
@@ -148,7 +160,7 @@ class RecordCreateViewModel(
 
     private fun updatePlayerStateAction(action: PlayerState.Action) {
         val updatedPlayerState = _state.value.playerState.copy(action = action)
-        _state.value = _state.value.copy(playerState = updatedPlayerState)
+        _state.update { it.copy(playerState = updatedPlayerState) }
     }
 
     private fun observeAudioPlayerCurrentPosition() {
@@ -156,24 +168,26 @@ class RecordCreateViewModel(
             audioPlayer.currentPositionFlow.collect { positionMillis ->
                 val currentPositionText =
                     InstantFormatter.formatMillisToTime(positionMillis.toLong())
-                _state.value = _state.value.copy(
-                    playerState = _state.value.playerState.copy(
-                        currentPosition = positionMillis,
-                        currentPositionText = currentPositionText
-                    )
 
-                )
+                _state.update {
+                    it.copy(
+                        playerState = it.playerState.copy(
+                            currentPosition = positionMillis,
+                            currentPositionText = currentPositionText
+                        )
+                    )
+                }
             }
         }
     }
 
     private fun toggleSheetState(activeMood: MoodUi? = null) {
-        _state.value = _state.value.copy(
-            recordSheetState = _state.value.recordSheetState.copy(
-                isOpen = !_state.value.recordSheetState.isOpen,
+        updateSheetState {
+            it.copy(
+                isOpen = !it.isOpen,
                 activeMood = activeMood
             )
-        )
+        }
     }
 
     private fun playAudio() {
@@ -222,11 +236,15 @@ class RecordCreateViewModel(
     }
 
     private fun toggleLeaveDialog() {
-        _state.value = _state.value.copy(showLeaveDialog = !_state.value.showLeaveDialog)
+        _state.update {
+            it.copy(showLeaveDialog = !_state.value.showLeaveDialog)
+        }
     }
 
     private fun updateSheetState(update: (RecordCreateState.RecordSheetState) -> RecordCreateState.RecordSheetState) {
-        _state.value = _state.value.copy(recordSheetState = update(_state.value.recordSheetState))
+        _state.update {
+            it.copy(recordSheetState = update(it.recordSheetState))
+        }
     }
 
     private fun getUserPreferences() {
@@ -236,15 +254,34 @@ class RecordCreateViewModel(
             if (userPreferences.defaultMood != null) {
                 _state.update {
                     it.copy(
-                        currentMood = getMoodUiByMood(userPreferences.defaultMood)
+
+                        currentMood  = MoodUi(
+                            resId = getMoodColoured(userPreferences.defaultMood),
+                            name = userPreferences.defaultMood.name,
+                            isSelected = true,
+                            moodColor = getMoodColorByMoodName(userPreferences.defaultMood.name)
+                        )
+                    )
+                }
+            } else {
+                _state.update {
+                    it.copy(
+                        currentMood = MoodUi(
+                            resId = getMoodColoured(Mood.NEUTRAL),
+                            name = "NEUTRAL",
+                            isSelected = true,
+                            moodColor = getMoodColorByMoodName("NEUTRAL")
+                        )
                     )
                 }
             }
 
-            _state.value = _state.value.copy(
-                currentTopics = userPreferences.topics.filter { it.isDefault == true },
-                topics = userPreferences.topics
-            )
+            _state.update {
+                it.copy(
+                    currentTopics = userPreferences.topics.filter { it.isDefault == true },
+                    topics = userPreferences.topics
+                )
+            }
         }
     }
 
@@ -258,31 +295,42 @@ class RecordCreateViewModel(
     }
 
     private fun setCurrentMood(mood: MoodUi) {
-        _state.value = _state.value.copy(
-            currentMood = mood
-        )
+        _state.update {
+            it.copy(
+                currentMood = mood
+            )
+        }
         toggleSheetState()
     }
 
     private fun updateActiveMood(mood: MoodUi) {
-        _state.value = _state.value.copy(
-            recordSheetState = _state.value.recordSheetState.copy(activeMood = mood)
-        )
+        _state.update {
+            it.copy(
+                recordSheetState = _state.value.recordSheetState.copy(activeMood = MoodUi(
+                    resId = getMoodColoured(getMoodByName(mood.name)!!),
+                    name = mood.name,
+                    isSelected = true,
+                    moodColor = mood.moodColor
+                ))
+            )
+        }
     }
 
     private fun updateTopic(topic: String) {
-        _state.value = _state.value.copy(
-            topicValue = topic
-        )
+        _state.update {
+            it.copy(topicValue = topic)
+        }
         searchQuery.value = topic
     }
 
     private fun updateCurrentTopics(newTopic: Topic) {
-        _state.value = _state.value.copy(
-            currentTopics = _state.value.currentTopics + newTopic,
-            topics = _state.value.topics + newTopic,
-            topicValue = ""
-        )
+        _state.update {
+            it.copy(
+                currentTopics = _state.value.currentTopics + newTopic,
+                topics = _state.value.topics + newTopic,
+                topicValue = ""
+            )
+        }
     }
 
     private fun addNewTopic() {
@@ -304,8 +352,12 @@ class RecordCreateViewModel(
 
     private fun subscribeToTopicSearchResults() {
         viewModelScope.launch {
-            searchResults.collect {
-                _state.value = _state.value.copy(foundTopics = searchResults.value)
+            searchResults?.collect {
+                _state.update {
+                    it.copy(
+                        foundTopics = searchResults.value
+                    )
+                }
             }
         }
     }

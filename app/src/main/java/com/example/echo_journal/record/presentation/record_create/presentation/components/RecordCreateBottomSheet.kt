@@ -28,6 +28,7 @@ import com.example.echo_journal.R
 import com.example.echo_journal.core.domain.Mood
 import com.example.echo_journal.core.domain.MoodUi
 import com.example.echo_journal.core.presentation.components.IconWithText
+import com.example.echo_journal.core.presentation.util.getMoodColorByMoodName
 import com.example.echo_journal.core.presentation.util.getMoodUiByMood
 import com.example.echo_journal.record.presentation.record_create.RecordCreateAction
 import com.example.echo_journal.record.presentation.record_create.RecordCreateState
@@ -70,7 +71,12 @@ fun RecordCreateSheet(
                     Mood.entries.forEach {
                         val moodUi: MoodUi
                         if (recordCreateSheetState.activeMood != null && recordCreateSheetState.activeMood.name == it.name) {
-                            moodUi = recordCreateSheetState.activeMood
+                            moodUi = MoodUi(
+                                resId = recordCreateSheetState.activeMood.resId,
+                                name = "NEUTRAL",
+                                isSelected = true,
+                                moodColor = getMoodColorByMoodName("NEUTRAL")
+                            )
                         } else {
                             moodUi = getMoodUiByMood(it)
                         }
