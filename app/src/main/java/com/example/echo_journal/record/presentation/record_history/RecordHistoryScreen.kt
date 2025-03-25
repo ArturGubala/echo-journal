@@ -26,6 +26,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.echo_journal.R
@@ -127,7 +128,9 @@ private fun RecordHistoryScreen(
         else {
             HomeScreen(
                 state = state,
-                onAction = onAction
+                onAction = onAction,
+                modifier = Modifier.padding(padding)
+                    .padding(vertical = 8.dp, horizontal = 16.dp),
             )
         }
 
@@ -141,11 +144,14 @@ private fun RecordHistoryScreen(
 @Composable
 private fun HomeScreen(
     state: RecordHistoryState,
-    onAction: (RecordHistoryAction) -> Unit
+    onAction: (RecordHistoryAction) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var filterOffset by remember { mutableStateOf(IntOffset.Zero) }
 
-    Column {
+    Column(
+        modifier = modifier
+    ) {
         EchoFilter(
             filterState = state.filterState,
             onAction = onAction,
