@@ -3,9 +3,13 @@ package com.example.echo_journal.record.presentation.record_history
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.echo_journal.core.data.database.RoomRecordDataSource
+import com.example.echo_journal.core.domain.Mood
 import com.example.echo_journal.core.domain.PlayerState
 import com.example.echo_journal.core.domain.audio.AudioPlayer
 import com.example.echo_journal.core.domain.audio.AudioRecorder
+import com.example.echo_journal.core.domain.record.Record
+import com.example.echo_journal.core.presentation.util.getMoodByName
+import com.example.echo_journal.record.presentation.record_history.RecordHistoryState.FilterState
 import com.example.echo_journal.record.presentation.record_history.RecordHistoryState.RecordHolderState
 import com.example.echo_journal.utils.InstantFormatter
 import com.example.echo_journal.utils.StopWatch
@@ -13,11 +17,16 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZoneOffset
 
 class RecordHistoryViewModel(
     private val recordDataSource: RoomRecordDataSource,
@@ -28,6 +37,8 @@ class RecordHistoryViewModel(
     private val _state = MutableStateFlow(RecordHistoryState())
     val state = _state
         .onStart {
+            observeEntries()
+            observeFilters()
             setupAudioPlayerListeners()
             observeAudioPlayerCurrentPosition()
         }
@@ -43,10 +54,33 @@ class RecordHistoryViewModel(
     private val stopWatch = StopWatch()
     private var stopWatchJob: Job? = null
 
+    private val moodFiltersChecked = MutableStateFlow<List<FilterState.FilterItem>>(emptyList())
+    private val topicFiltersChecked = MutableStateFlow<List<FilterState.FilterItem>>(emptyList())
+    private val filteredRecords = MutableStateFlow<Map<Instant, List<RecordHolderState>>?>(emptyMap())
+    private var fetchedRecords: Map<Instant, List<RecordHolderState>> = emptyMap()
+
     private var playingRecordId = MutableStateFlow<Long?>(null)
 
     fun onAction(action: RecordHistoryAction) {
         when(action) {
+            is RecordHistoryAction.MoodFilterItemClicked -> {
+                toggleMoodItemCheckedState(action.title)
+            }
+            RecordHistoryAction.MoodsFilterClearClicked -> {
+                clearMoodFilter()
+            }
+            RecordHistoryAction.MoodsFilterToggled -> {
+                toggleMoodFilter()
+            }
+            is RecordHistoryAction.TopicFilterItemClicked -> {
+                toggleTopicItemCheckedState(action.title)
+            }
+            RecordHistoryAction.TopicsFilterClearClicked -> {
+                clearTopicFilter()
+            }
+            RecordHistoryAction.TopicsFilterToggled -> {
+                toggleTopicFilter()
+            }
             is RecordHistoryAction.OnSettingsClick -> {
                 viewModelScope.launch {
                     eventChannel.send(RecordHistoryEvent.NavigateToSettings)
@@ -79,10 +113,60 @@ class RecordHistoryViewModel(
                 stopRecording(action.saveFile)
             }
 
-            is RecordHistoryAction.RecordPlayClick -> playRecord(action.recordId)
-            is RecordHistoryAction.RecordPauseClick -> pauseRecord(action.recordId)
-            is RecordHistoryAction.RecordResumeClick -> resumeRecord(action.recordId)
+            is RecordHistoryAction.RecordPlayClick -> {
+                playRecord(action.recordId)
+            }
+            is RecordHistoryAction.RecordPauseClick -> {
+                pauseRecord(action.recordId)
+            }
+            is RecordHistoryAction.RecordResumeClick -> {
+                resumeRecord(action.recordId)
+            }
         }
+    }
+
+    private fun observeEntries() {
+        var isFirstLoad = true
+
+        recordDataSource.getRecords()
+            .combine(filteredRecords) { dataEntries, currentFilteredEntries ->
+                val topics = mutableSetOf<String>()
+
+                val sortedEntries = if (currentFilteredEntries != null && currentFilteredEntries.isEmpty()) {
+                    fetchedRecords = groupRecordsByDate(dataEntries, topics)
+                    fetchedRecords
+                } else currentFilteredEntries ?: emptyMap()
+
+                val updatedTopicFilterItems = addNewTopicFilterItems(topics.toList())
+                _state.update {
+                    it.copy(
+                        records = sortedEntries,
+                        filterState = it.filterState.copy(topicFilterItems = updatedTopicFilterItems)
+                    )
+                }
+
+                if (isFirstLoad) {
+                    viewModelScope.launch {
+                        eventChannel.send(RecordHistoryEvent.DataLoaded)
+                        isFirstLoad = false
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun observeFilters() {
+        combine(moodFiltersChecked, topicFiltersChecked) { moodFilters, topicFilters ->
+            val moods = moodFilters.map { getMoodByName(it.title)!! }
+            val topicTitles = topicFilters.map { it.title }
+            val isFilterActive = moodFilters.isNotEmpty() || topicFilters.isNotEmpty()
+
+            filteredRecords.value = if (isFilterActive) {
+                getFilteredRecords(fetchedRecords, moods, topicTitles)
+            } else emptyMap()
+
+            _state.update { it.copy(isFilterActive = isFilterActive) }
+        }.launchIn(viewModelScope)
     }
 
     private fun observeAudioPlayerCurrentPosition() {
@@ -100,6 +184,41 @@ class RecordHistoryViewModel(
 
             }
         }
+    }
+
+    private fun groupRecordsByDate(
+        records: List<Record>,
+        topics: MutableSet<String>
+    ): Map<Instant, List<RecordHolderState>> {
+        return records.groupBy { record ->
+            record.topics.forEach { topic ->
+                if (!topics.contains(topic)) topics.add(topic)
+            }
+            record.creationTimestamp
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+                .atStartOfDay(ZoneOffset.UTC)
+                .toInstant()
+        }.mapValues { (_, recordList) ->
+            recordList.map { RecordHolderState(it) }
+        }
+    }
+
+    private fun toggleMoodFilter() {
+        val updatedFilterState = _state.value.filterState.copy(
+            isMoodsOpen = !_state.value.filterState.isMoodsOpen,
+            isTopicsOpen = false
+        )
+        _state.update { it.copy(filterState = updatedFilterState) }
+    }
+
+    private fun toggleMoodItemCheckedState(title: String) {
+        val updatedMoodItems = _state.value.filterState.moodFilterItems.map {
+            if (it.title == title) it.copy(isChecked = !it.isChecked) else it
+        }
+
+        moodFiltersChecked.value = updatedMoodItems.filter { it.isChecked }
+        updateMoodFilterItems(updatedMoodItems)
     }
 
     private fun setupAudioPlayerListeners() {
@@ -262,5 +381,92 @@ class RecordHistoryViewModel(
         _state.update {
             it.copy(recordHistorySheetState = updatedSheetState)
         }
+    }
+
+    private fun getFilteredRecords(
+        records: Map<Instant, List<RecordHolderState>>,
+        moodFilters: List<Mood>,
+        topicFilters: List<String>
+    ): Map<Instant, List<RecordHolderState>>? {
+        return records.mapValues { (_, recordList) ->
+            recordList.filter { recordHolderState ->
+                val record = recordHolderState.record
+                record.mood in moodFilters || record.topics.any { it in topicFilters }
+            }
+        }.filterValues { it.isNotEmpty() }.ifEmpty { null }
+    }
+
+    private fun addNewTopicFilterItems(topics: List<String>): List<FilterState.FilterItem> {
+        val currentTopics = _state.value.filterState.topicFilterItems.map { it.title }
+        val newTopicItems = _state.value.filterState.topicFilterItems.toMutableList()
+        topics.forEach { topic ->
+            if (!currentTopics.contains(topic)) {
+                newTopicItems.add(FilterState.FilterItem(topic))
+            }
+        }
+        return newTopicItems
+    }
+
+    private fun updateTopicFilterItems(
+        updatedItems: List<FilterState.FilterItem>,
+        isOpen: Boolean = true
+    ) {
+        _state.update {
+            it.copy(
+                filterState = _state.value.filterState.copy(
+                    topicFilterItems = updatedItems,
+                    isTopicsOpen = isOpen
+                )
+            )
+        }
+    }
+
+    private fun updateMoodFilterItems(
+        updatedItems: List<FilterState.FilterItem>,
+        isOpen: Boolean = true
+    ) {
+        _state.update {
+            it.copy(
+                filterState = _state.value.filterState.copy(
+                    moodFilterItems = updatedItems,
+                    isMoodsOpen = isOpen
+                )
+            )
+        }
+    }
+
+    private fun clearMoodFilter() {
+        moodFiltersChecked.value = emptyList()
+        val updatedMoodItems = _state.value.filterState.moodFilterItems.map {
+            if (it.isChecked) it.copy(isChecked = false) else it
+        }
+
+        updateMoodFilterItems(updatedMoodItems, false)
+    }
+
+    private fun toggleTopicItemCheckedState(title: String) {
+        val updatedTopicItems = _state.value.filterState.topicFilterItems.map {
+            if (it.title == title) it.copy(isChecked = !it.isChecked) else it
+        }
+
+        topicFiltersChecked.value = updatedTopicItems.filter { it.isChecked }
+        updateTopicFilterItems(updatedTopicItems)
+    }
+
+    private fun clearTopicFilter() {
+        topicFiltersChecked.value = emptyList()
+        val updatedTopicItems = _state.value.filterState.topicFilterItems.map {
+            if (it.isChecked) it.copy(isChecked = false) else it
+        }
+
+        updateTopicFilterItems(updatedTopicItems, false)
+    }
+
+    private fun toggleTopicFilter() {
+        val updatedFilterState = _state.value.filterState.copy(
+            isTopicsOpen = !_state.value.filterState.isTopicsOpen,
+            isMoodsOpen = false
+        )
+        _state.update { it.copy(filterState = updatedFilterState) }
     }
 }

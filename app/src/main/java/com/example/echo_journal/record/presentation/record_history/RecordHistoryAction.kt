@@ -20,5 +20,7 @@ interface RecordHistoryAction {
     data object TopicsFilterToggled : RecordHistoryAction
     data object MoodsFilterClearClicked : RecordHistoryAction
     data object TopicsFilterClearClicked : RecordHistoryAction
+    data class MoodFilterItemClicked(val title: String) : RecordHistoryAction
+    data class TopicFilterItemClicked(val title: String) : RecordHistoryAction
 
 }

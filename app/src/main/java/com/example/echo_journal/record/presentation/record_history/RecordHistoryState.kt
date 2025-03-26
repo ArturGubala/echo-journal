@@ -1,6 +1,7 @@
 package com.example.echo_journal.record.presentation.record_history
 
 import androidx.compose.runtime.Stable
+import com.example.echo_journal.core.domain.Mood
 import com.example.echo_journal.core.domain.PlayerState
 import com.example.echo_journal.core.domain.record.Record
 import com.example.echo_journal.utils.Constants
@@ -33,7 +34,7 @@ data class RecordHistoryState(
     data class FilterState(
         val isMoodsOpen: Boolean = false,
         val isTopicsOpen: Boolean = false,
-        val moodFilterItems: List<FilterItem> = listOf(),
+        val moodFilterItems: List<FilterItem> = Mood.entries.map { FilterItem(title = it.name) },
         val topicFilterItems: List<FilterItem> = listOf()
     ) {
         data class FilterItem(
