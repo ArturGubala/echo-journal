@@ -34,6 +34,7 @@ import com.example.echo_journal.core.presentation.util.ObserveAsEvents
 import com.example.echo_journal.record.navigation.navigateToCreateRecord
 import com.example.echo_journal.record.presentation.components.EchoFilter
 import com.example.echo_journal.record.presentation.components.EmptyRecordHistoryScreen
+import com.example.echo_journal.record.presentation.components.FilterList
 import com.example.echo_journal.record.presentation.components.JournalEntries
 import com.example.echo_journal.record.presentation.components.RecordHistoryFAB
 import com.example.echo_journal.record.presentation.components.RecordingBottomSheet
@@ -177,21 +178,21 @@ private fun HomeScreen(
         )
     }
 
-//    if (state.filterState.isMoodsOpen) {
-//        FilterList(
-//            filterItems = state.filterState.moodFilterItems,
-//            onItemClick = { onAction(RecordHistoryAction.MoodFilterItemClicked(it)) },
-//            onDismissClicked = { onAction(RecordHistoryAction.MoodsFilterToggled) },
-//            startOffset = filterOffset
-//        )
-//    }
-//
-//    if (state.filterState.isTopicsOpen) {
-//        FilterList(
-//            filterItems = state.filterState.topicFilterItems,
-//            onItemClick = { onAction(RecordHistoryAction.TopicFilterItemClicked(it)) },
-//            onDismissClicked = { onAction(RecordHistoryAction.TopicsFilterToggled) },
-//            startOffset = filterOffset
-//        )
-//    }
+    if (state.filterState.isMoodsOpen) {
+        FilterList(
+            filterItems = state.filterState.moodFilterItems,
+            onItemClick = { onAction(RecordHistoryAction.MoodFilterItemClicked(it)) },
+            onDismissClicked = { onAction(RecordHistoryAction.MoodsFilterToggled) },
+            startOffset = filterOffset
+        )
+    }
+
+    if (state.filterState.isTopicsOpen) {
+        FilterList(
+            filterItems = state.filterState.topicFilterItems,
+            onItemClick = { onAction(RecordHistoryAction.TopicFilterItemClicked(it)) },
+            onDismissClicked = { onAction(RecordHistoryAction.TopicsFilterToggled) },
+            startOffset = filterOffset
+        )
+    }
 }
